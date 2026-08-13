@@ -1,0 +1,69 @@
+/* Enter your custom styles here */
+
+
+/* Enter your custom styles here */
+
+.sapUxAPObjectPageContainerNoBar>.sapUxAPObjectPageSection:first-child:not(.sapUxAPObjectPageSectionNoTitle) {
+    margin-top: 0.1rem !important;
+}
+
+.sapUiSizeCompact .sapUxAPObjectPageSectionHeader, .sapUxAPObjectPageSectionHeader {
+    height: 0.1rem !important;
+}
+.sapFDynamicPageTitleMain>.sapFDynamicPageTitleMainInner .sapFDynamicPageTitleMainHeading .sapFDynamicPageTitleMainHeadingInner .sapMTitle {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.wid {
+    margin-left: 200px !important;
+}
+
+.lblClass{
+    width: 10rem !important;
+    text-align: center !important;
+    
+
+}
+
+.hBoxlab {
+    margin-left: 300px !important;
+}
+
+.left {
+    margin-left: 25px;
+}
+
+div#container-cpapp\.cptemplate---Template--idform2--Grid {
+    margin-left: 110px;
+}
+
+.titlemargin {
+    margin-left: 500px !important;
+}
+
+.vboxline {
+    border-right: 1px solid #0f0f0f !important;
+}
+
+.addBorder{
+    border: 2px solid #8aef94 !important; ;
+}
+
+.sapMSplitContainerMaster {
+    width: 35rem !important;
+    height: 90% !important;
+}
+
+.sapMSplitContainerDetail {
+    
+    height: 90% !important;
+}
+
+.addBorder{
+    border: 2px solid #8aef94 !important; ;
+}
+
+div:has(> .classHdr) {
+    margin-left: 60% !important;
+}

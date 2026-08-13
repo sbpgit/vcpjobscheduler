@@ -1,0 +1,136 @@
+ <mvc:View controllerName="vcpapp.vcptemplate.controller.Home" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" displayBlock="true" xmlns="sap.m" xmlns:m="sap.m" xmlns:l="sap.ui.layout" xmlns:ux="sap.uxap" xmlns:f="sap.ui.layout.form" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:u = "sap.ui.unified">
+    <ux:ObjectPageLayout id="ObjectPageLayout">
+        <ux:headerTitle>
+            <ux:ObjectPageDynamicHeaderTitle>
+                <ux:expandedHeading>
+                    <HBox>
+                        <Label id="idVariantName" required="false" text="" class="Text" />
+                        <ToggleButton id="idDropDown" icon="sap-icon://slim-arrow-down" press="onDropDownPress" />
+                        <Title text="{i18n>title}" class="titlemargin" titleAlignment="Center" wrapping="true" />
+                        <!-- <Button class="hdrBtnMarginHdr" type="Emphasized" icon="sap-icon://sys-help" press="onNavPress" tooltip="Help Document" id="nav2" /> -->
+                    </HBox>
+                </ux:expandedHeading>
+                <ux:snappedHeading>
+                    <HBox fitContainer="true" alignItems="Center">
+                        <Title text="{i18n>title}" wrapping="true" class="titlemargin"/>
+                        <!-- <Button class="hdrBtnMarginHdr1" type="Emphasized" icon="sap-icon://sys-help" press="onNavPress" tooltip="Help Document" id="nav" /> -->
+                    </HBox>
+                </ux:snappedHeading>
+            </ux:ObjectPageDynamicHeaderTitle>
+        </ux:headerTitle>
+        <ux:headerContent>
+            <FlexBox wrap="Wrap" fitContainer="true">
+                <l:Grid defaultSpan="XL6 L6 M6 S8">
+                    <VBox>
+                        <Label text="" />
+                        <SearchField id="headSearch" liveChange="onStepCount" placeholder="Template"  />
+                    </VBox>
+                    <!-- <VBox>
+                        <Label text="Job Template Name" required="true" />
+                        <Input id="idTemp" value="" placeholder="Job Template Name" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                    </VBox> -->
+                    <VBox>
+                        <Label text="Steps" />
+                        <HBox >
+                         <Input id="idSteps" placeholder="Steps" width="150px" value="0" liveChange="onStepCount" class="sapUiSmallMarginBeginEnd"/>
+                            <!-- <RadioButtonGroup id="idStype" columns="2" select="onStepCount" > -->
+                            <HBox>
+                                <HBox>
+                                    <RadioButton id="idG1" groupName="GroupA" selected="true" select="onStepCount"/>
+                                    <Button id="idG" icon="sap-icon://slim-arrow-right" iconFirst="true" iconDensityAware="false" enabled="false" />
+                                </HBox>
+                                <HBox>
+                                    <RadioButton id="idL1" groupName="GroupA" select="onStepCount" />
+                                    <Button id="idL" icon="sap-icon://slim-arrow-left" iconFirst="true" iconDensityAware="false" enabled="false"/>
+                                    
+                                </HBox>
+                            </HBox>
+
+                                <!-- </RadioButtonGroup> -->
+                                <!-- <Select id="idStype" change="onStepCount" selectedKey="GT" class="buttonDesktop sapUiSmallMarginBegin"  >
+                                            <core:ListItem key="LT" icon="sap-icon://navigation-left-arrow"/>
+                                            <core:ListItem key="GT" icon="sap-icon://navigation-right-arrow"/>
+                                            
+                                        </Select> -->
+                        </HBox>
+                    </VBox>
+                    
+
+                    <!-- <VBox visible="false">
+                        <Label text="" />
+                        <HBox>
+                            <Button text="Go" type="Emphasized" press="onGetData" tooltip="Get data based on filters" class="sapUiTinyMarginEnd" />
+                            <Button text="Reset" type="Transparent" press="onResetDate" tooltip="Reset Valid To Date" />
+                        </HBox>
+                    </VBox> -->
+                </l:Grid>
+                <Button class="classHdr" icon="sap-icon://sys-help" id="idNav3CharCon" press="onNavPress" type="Emphasized" tooltip="Help Document"/>
+            </FlexBox>
+        </ux:headerContent>
+        <ux:sections>
+            <ux:ObjectPageSection>
+                <ux:subSections>
+                    <ux:ObjectPageSubSection>
+                        <ux:blocks>
+                            <Table id="templateList" sticky="HeaderToolbar" items="{path: '/templatesresults'}" itemPress="onhandlePress" growingScrollToLoad="true" mode="SingleSelectMaster" selectionChange="onhandlePress" rememberSelections="false">
+                                <headerToolbar>
+                                    <Toolbar>
+                                        <content>
+                                        <HBox id="LayerGroup" visible="false">
+                                                <Label text="Group" class="sapUiTinyMarginTop sapUiTinyMarginEnd"/>
+                                            <Select id="idLayer" change="onLayerCode" selectedKey="">
+                                                <!-- <core:ListItem key="A" text="All"/> -->
+                                                <core:ListItem key="I" text="Internal"/>
+                                                <core:ListItem key="E" text="External"/>
+                                                
+                                            </Select>
+                                            </HBox>
+                                            <ToolbarSpacer />
+                                            <Button id="create" text="{i18n>create}" press="onCreateTemplate" type="Ghost"></Button>
+                                            <Button id="idVar" text="Variant Maintenance" press="onVariant" type="Ghost"></Button>
+                                            <Button id="idEdit" type='Ghost' text="Edit" press="onCopyTemplate" />
+                                            <Button id="idCopy" type='Ghost' text="Copy" press="onCopyTemplate" />
+                                            <Button id="idDel" type='Ghost' text="Delete" press="onDeleteTemplate" />
+                                            <!-- <Button tooltip="Sort" icon="sap-icon://sort" press="handleSortButtonPressed" id="idSort" visible="true" type="Emphasized" /> -->
+                                            
+                                        
+                                        </content>
+                                    </Toolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column hAlign="Left" vAlign="Middle" visible="true">
+                                        <Text text="{i18n>jobtemplate}" />
+                                    </Column>
+                                    <Column hAlign="Left" vAlign="Middle" visible="true">
+                                        <Text text="{i18n>jobtempDesc}" />
+                                    </Column>
+                                    <Column hAlign="Left" vAlign="Middle" visible="true">
+                                        <Text text="{i18n>steps}" />
+                                    </Column>
+                                    <Column hAlign="Left" vAlign="Middle">
+                                        <Text text="{i18n>layer}" />
+                                    </Column>
+                                    <Column hAlign="Left" vAlign="Middle" visible="false">
+                                        <Text text="Level" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{TEMPLATE_ID}" />
+                                            <Text text="{TEMPLATE_DESC}" />
+                                            <Text text="{STEPS}" />
+                                            <Text text="{LAYER_CODE}" />
+                                            <Text text="{LEVEL}" />
+                                            <!-- <Button id="idDel" icon="sap-icon://delete" press="onDelete" tooltip="Delete Template" iconDensityAware="false" type="Transparent" /> -->
+                                            </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </ux:blocks>
+                    </ux:ObjectPageSubSection>
+                </ux:subSections>
+            </ux:ObjectPageSection>
+        </ux:sections>
+    </ux:ObjectPageLayout>
+</mvc:View>

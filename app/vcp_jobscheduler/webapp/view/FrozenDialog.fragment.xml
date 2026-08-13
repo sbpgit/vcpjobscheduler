@@ -1,0 +1,185 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="idFro"
+        contentWidth="800px"
+        showHeader="false"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <f:SimpleForm
+                    id="FormToolbar"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="2"
+                    labelSpanL="2"
+                    labelSpanM="2"
+                    labelSpanS="2"
+                    adjustLabelSpan="false"
+                    emptySpanXL="0"
+                    emptySpanL="4"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    columnsXL="2"
+                    columnsL="1"
+                    columnsM="1"
+                    singleContainerFullSize="false"
+                    ariaLabelledBy="Title1"
+                >
+                    <f:content>
+                        <core:Title
+                            text="Recurring Details:"
+                            class="boldunderlineText"
+                        />
+                        <Label text="{i18n>jobtype}" />
+                        <RadioButtonGroup
+                            id="idType"
+                            select="RadioSelect"
+                            columns="2"
+                        >
+                            <RadioButton
+                                id="idSingle"
+                                text="Immediate"
+                            />
+                            <RadioButton
+                                id="idRecu"
+                                text="Recurrence"
+                            />
+                        </RadioButtonGroup>
+                        <Label
+                            id="LidOccurrenceF"
+                            text="Recurrence Type"
+                            visible="false"
+                        />
+                        <RadioButtonGroup
+                            id="idOccurrence"
+                            select="RadioSelect"
+                            columns="2"
+                            visible="false"
+                        >
+                            <RadioButton
+                                id="Daily"
+                                text="Daily"
+                            />
+                            <RadioButton
+                                id="Weekly"
+                                text="Weekly"
+                            />
+                        </RadioButtonGroup>
+                        <Label
+                            id="LidWeek"
+                            text="Week"
+                            visible="false"
+                        />
+                        <Select
+                            id="idWeek"
+                            change="onWeek"
+                            visible="false"
+                            selectedKey="0"
+                            class="buttonDesktop"
+                            width="150px"
+                            placeholder="Week"
+                        >
+                            <core:ListItem
+                                key="0"
+                                text="No Selection"
+                            />
+                            <core:ListItem
+                                key="1"
+                                text="{i18n>sday}"
+                            />
+                            <core:ListItem
+                                key="2"
+                                text="{i18n>mday}"
+                            />
+                            <core:ListItem
+                                key="3"
+                                text="{i18n>tdat}"
+                            />
+                            <core:ListItem
+                                key="4"
+                                text="{i18n>wday}"
+                            />
+                            <core:ListItem
+                                key="5"
+                                text="{i18n>thday}"
+                            />
+                            <core:ListItem
+                                key="6"
+                                text="{i18n>fday}"
+                            />
+                            <core:ListItem
+                                key="7"
+                                text="{i18n>saday}"
+                            />
+                        </Select>
+
+                        <Label
+                            id="SSTF"
+                            text="{i18n>Schedstarttime}"
+                        />
+                        <DateTimePicker
+                            id="idSSTimeF"
+                            width="400px"
+                            valueFormat="yyyy-mm-dd HH:mm"
+                            class="sapUiSmallMarginBottom"
+                            change="onSchTimeChange"
+                        />
+                        <Label
+                            id="SETF"
+                            text="{i18n>Schedendtime}"
+                        />
+                        <DateTimePicker
+                            id="idSETimeF"
+                            width="400px"
+                            valueFormat="yyyy-mm-dd HH:mm"
+                            class="sapUiSmallMarginBottom"
+                            visible="false"
+                        />
+
+                        <Label
+                            id="JSTF"
+                            text="Job Start Time"
+                        />
+                        <DateTimePicker
+                            id="idJSTimeF"
+                            width="400px"
+                            valueFormat="yyyy-mm-dd HH:mm"
+                            class="sapUiSmallMarginBottom"
+                            visible="false"
+                            change="onSchTimeChange"
+                        />
+                        <Label
+                            id="JETF"
+                            text="Job End Time"
+                        />
+                        <DateTimePicker
+                            id="idJETimeF"
+                            width="400px"
+                            valueFormat="yyyy-mm-dd HH:mm"
+                            class="sapUiSmallMarginBottom"
+                            visible="false"
+                        />
+                    </f:content>
+                </f:SimpleForm>
+            </VBox>
+        </content>
+        <buttons>
+            <Button
+                type='Accept'
+                text="Create Job"
+                press="FrozenCreate"
+            />
+            <Button
+                type='Reject'
+                text="{i18n>close}"
+                press="onCloseFrozen"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

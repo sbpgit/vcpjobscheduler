@@ -1,0 +1,225 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "vcpapp.vcptemplate",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "2512.01.01"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.13.2",
+      "toolsId": "cef53917-d8eb-4bfa-af11-36ae4b826efb"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/v2/catalog/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "Job-scheduler": {
+        "uri": "/v2/job-scheduler/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "Jobs": {
+        "uri": "/v2/jobs/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "MaintainApplication-display": {
+          "semanticObject": "MaintainApplication",
+          "icon": "sap-icon://add-equipment",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://add-equipment",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "rootView": {
+      "viewName": "vcpapp.vcptemplate.view.App",
+      "type": "XML",
+      "async": false,
+      "id": "App"
+    },
+    "dependencies": {
+      "minUI5Version": "1.108.39",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "vcpapp.vcptemplate.i18n.i18n"
+        }
+      },
+      "oGModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "settings": {
+          "defaultBindingMode": "TwoWay"
+        },
+        "preload": true
+      },
+      "BModel": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$direct"
+        }
+      },
+      "JModel": {
+        "dataSource": "Job-scheduler",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$direct",
+          "useBatch": true,
+          "defaultBindingMode": "TwoWay"
+        }
+      },
+      "JSModel": {
+        "dataSource": "Jobs",
+        "preload": true,
+        "settings": {
+          "useBatch": true,
+          "defaultBindingMode": "TwoWay"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "vcpapp.vcptemplate.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Home",
+          "pattern": "",
+          "target": [
+            "Home"
+          ]
+        },
+        {
+          "name": "Template",
+          "pattern": "Template",
+          "target": [
+            "Template"
+          ]
+        },
+        {
+          "name": "Variant",
+          "pattern": "Variant",
+          "target": [
+            "Variant"
+          ]
+        }
+      ],
+      "targets": {
+        "Home": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Home",
+          "viewName": "Home"
+        },
+        "Template": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": true,
+          "viewId": "Template",
+          "viewName": "Template"
+        },
+        "Variant": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": true,
+          "viewId": "Variant",
+          "viewName": "Variant"
+        }
+      }
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "vcpjobscheduler"
+  },
+  "sap.platform.cf": {
+    "oAuthScopes": [
+      "$XSAPPNAME.User",
+      "$XSAPPNAME.admin"
+    ],
+    "ui5VersionNumber": "1.108.39"
+  }
+}

@@ -1,0 +1,841 @@
+sap.ui.define(
+  [
+    "vcpapp/vcpjobschedularlogs/controller/BaseController",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox",
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/Device",
+    "sap/ui/core/Fragment",
+  ],
+  function (
+    BaseController,
+    MessageToast,
+    MessageBox,
+    JSONModel,
+    Filter,
+    FilterOperator,
+    Device,
+    Fragment
+  ) {
+    "use strict";
+    var that, oGModel;
+    return BaseController.extend("vcpapp.vcpjobschedularlogs.controller.ItemDetail", {
+      /**
+       * Called when a controller is instantiated and its View controls (if available) are already created.
+       * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+       */
+      onInit: function () {
+        that = this;
+        this.bus = sap.ui.getCore().getEventBus();
+        // Declaring JSON Models and size limit
+        this.JobLogsModel = new JSONModel();
+        this.JobDataModel = new JSONModel();
+        this.ScheLogModel = new JSONModel();
+        this.ScheRunLogModel = new JSONModel();
+
+        this.JobLogsModel.setSizeLimit(1000);
+        this.JobDataModel.setSizeLimit(1000);
+        this.ScheLogModel.setSizeLimit(1000);
+        this.ScheRunLogModel.setSizeLimit(1000);
+        oGModel = that.getOwnerComponent().getModel("oGModel");
+      },
+      /**
+       * Called after the view has been rendered. onAfterRendering fun
+       * Calls the service to get Data.
+       */
+      onAfterRendering: async function () {
+        var timeZoneData = await that.onTimeZone();
+        if (!Device.system.desktop) {
+          this.byId("orient").setOrientation("Horizontal");
+        } else {
+          this.byId("orient").setOrientation("Vertical");
+        }
+        oGModel = that.getOwnerComponent().getModel("oGModel");
+        var oJobId = oGModel.getProperty("/jobId");
+        // Setting data to global models
+        oGModel.setProperty("/newSch", "");
+        oGModel.setProperty("/UpdateSch", "");
+        oGModel.setProperty("/flagcron", "");
+        oGModel.setProperty("/flagonetime", "");
+
+        if (oGModel.getProperty("/dataFlag") === "X") {
+          // Calling service to get the Job details
+          that.getModel("JModel").callFunction("/readJobDetails", {
+            method: "GET",
+            urlParameters: {
+              jobId: oJobId,
+              displaySchedules: true,
+            },
+            success: function (oData) {
+              // Changing the Datetime stamp
+              oData.readJobDetails.schedules.forEach(function (row) {
+                if (!oData.readJobDetails.action.includes("DemandQty")) {
+                  if (row.time) {
+                    if (row.time.includes("T")) {
+                      var dDate = row.time.split("T"),
+                        tTime = dDate[1].split(".")[0];
+
+                      row.time = dDate[0] + " " + tTime;
+                    }
+                  }
+                } else {
+                  if (row.time) {
+                    var dDate = row.time.split("+");
+                    row.time = dDate[0];
+                  }
+                }
+              }, that);
+
+
+
+              var aData = (oData.readJobDetails.schedules);
+              that.ConvertedTime(aData, "J")
+              if (aData.length) {
+                if (aData[0].type === "recurring") {
+                  oGModel.setProperty("/flagcron", "X");
+                } else if (aData[0].type === "one-time") {
+                  oGModel.setProperty("/flagonetime", "X");
+                }
+              }
+
+              if (aData.length) {
+                that.JobLogsModel.setData({
+                  results: aData,
+                });
+              } else {
+                that.JobLogsModel.setData({
+                  results: [],
+                });
+                that.ScheLogModel.setData({
+                  statusresults: [],
+                });
+                that.byId("idScheLogData").setModel(that.ScheLogModel);
+                that.ScheRunLogModel.setData({
+                  results: [],
+                });
+                that.byId("idScheRunLogData").setModel(that.ScheRunLogModel);
+              }
+              that.byId("idJobLogs").setModel(that.JobLogsModel);
+              var aJobDetails = oData.readJobDetails.schedules;
+
+              // Setting Job type to global model based on Job action
+              oGModel.setProperty("/aJobDetails", aJobDetails);
+              oGModel.setProperty("/JobType", "");
+              if (oData.readJobDetails.action.includes("Models")) {
+                oGModel.setProperty("/JobType", "M");
+              } else if (oData.readJobDetails.action.includes("Predictions")) {
+                oGModel.setProperty("/JobType", "P");
+              } else if (oData.readJobDetails.action.includes("/catalog/") && oData.readJobDetails.action.split("catalog/")[1] === "generateTimeseries") {
+                oGModel.setProperty("/JobType", "T");
+              } else if (oData.readJobDetails.action.includes("/catalog/") && oData.readJobDetails.action.split("catalog/")[1] === "generateTimeseriesF") {
+                oGModel.setProperty("/JobType", "F");
+              } else if (oData.readJobDetails.action.includes("sdi")) {
+                oGModel.setProperty("/JobType", "S");
+                var service = oGModel.getProperty("/Jobdata").action.split("/");
+                var length = service.length - 1;
+                service = service[length];
+                oGModel.setProperty("/SDIService", service);
+                // 20-09-2022
+              } else if (oData.readJobDetails.action.includes("genFullConfigDemand")) {
+                oGModel.setProperty("/JobType", "D");
+              } else if (oData.readJobDetails.action.includes("exportIBPAsmreq")) {
+                oGModel.setProperty("/JobType", "A");
+              } else if (oData.readJobDetails.action.includes("genUniqueID")) {
+                oGModel.setProperty("/JobType", "O");
+              } else if (oData.readJobDetails.action.includes("postCIRQuantitiesToS4")) {
+                oGModel.setProperty("/JobType", "PF");
+              } else if (oData.readJobDetails.action.includes("ibpimport-srv")) {
+                // 20-09-2022
+                if (oData.readJobDetails.action.includes("generateFDemandQty")) {
+                  oGModel.setProperty("/JobType", "I");
+                } else {
+                  oGModel.setProperty("/JobType", "E");
+                }
+
+                var service = oGModel.getProperty("/Jobdata").action.split("/");
+                var length = service.length - 1;
+                service = service[length];
+                oGModel.setProperty("/IBPService", service);
+              }
+              else if (oData.readJobDetails.action.includes("generateSeedOrders")) {
+                oGModel.setProperty("/JobType", "SeedOrder");
+              }
+
+              that.getView().byId("idJobLogs").setSelectedItem(that.getView().byId("idJobLogs").getItems()[0], true);
+              if (aData.length) {
+
+                that.onScheduleData();
+
+              }
+
+            },
+            error: function (error) {
+              sap.ui.core.BusyIndicator.hide();
+              MessageToast.show("Failed to get data");
+            },
+          });
+        }
+      },
+
+      /**
+         * This function is called when click on Schedule Data button to get the data.
+         * @param {object} oEvent -the event information.
+         */
+      onScheData: function (oEvent) {
+
+        if (!this._valueHelpDialogJobData) {
+          this._valueHelpDialogJobData = sap.ui.xmlfragment(
+            "vcpapp.vcpjobschedularlogs.view.JobData",
+            this
+          );
+          this.getView().addDependent(this._valueHelpDialogJobData);
+        }
+
+
+        var aData = oGModel.getProperty("/aJobDetails"),
+          ScheData = [];
+        // Getting the schedule Id for the selected Job
+        var scheduleId = oEvent.getSource().getParent().getBindingContext().getObject().scheduleId;
+
+        var jobType = oGModel.getProperty("/JobType");
+        var service = oGModel.getProperty("/IBPService");
+
+        // Looping through the data to get the data for IBP Integration and SDI Integration
+        for (var i = 0; i < aData.length; i++) {
+          if (scheduleId === aData[i].scheduleId) {
+            if (jobType === "S") {
+              ScheData = [];
+              // 04-10-2022
+            } else if (jobType === "A" || jobType === "O") {
+              var data = $.parseJSON(aData[i].data);
+              var aIData = {
+                Location: data.LOCATION_ID,
+                Product: data.PRODUCT_ID,
+              };
+              ScheData.push(aIData);
+              // 04-10-2022
+            } else if (jobType === "PF") {
+              var data = $.parseJSON(aData[i].data);
+              var aIData = {
+                Location: data.LOCATION_ID,
+                Product: data.PRODUCT_ID,
+                scenario: data.SCENARIO,
+                version: data.VERSION,
+                fromdate: data.FROMDATE,
+                todate: data.TODATE,
+                modelVersion: data.MODEL_VERSION
+              };
+              ScheData.push(aIData);
+
+            } else if (jobType === "D" || jobType === "T" || jobType === "F") {
+              var aIData = $.parseJSON(aData[i].data);
+              if (aIData.LocProdData) {
+                var aIData = $.parseJSON(aIData.LocProdData);
+
+                aIData.forEach(function (row) {
+                  row.Location = row.LOCATION_ID;
+                  row.Product = row.PRODUCT_ID;
+                  row.scenario = row.SCENARIO;
+                  row.version = row.VERSION;
+                  row.modelVersion = row.MODEL_VERSION;
+                }, that);
+              } else {
+                var aIData = {
+                  Location: data.LOCATION_ID,
+                  Product: data.PRODUCT_ID,
+                };
+              }
+              ScheData = aIData;
+            } else if (jobType === "I" || jobType === "E") {
+
+              if (aData[i].data !== "{}") {
+                var data = $.parseJSON(aData[i].data);
+
+                switch (service) {
+                  case "exportIBPLocProd":
+                    // var aIData = data;
+                    var aIData = {
+                      Location: data.LOCATION_ID,
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportIBPAssembly":
+                    // var aIData = data;
+                    var aIData = {
+                      Location: data.LOCATION_ID,
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportComponentReq":
+                    var aIData = data;
+                    var aIData = {
+                      Location: data.LOCATION_ID,
+                      Product: data.PRODUCT_ID,
+                      fromdate: data.FROMDATE,
+                      todate: data.TODATE,
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportIBPClass":
+                    var aIData = {
+                      CLASS_NUM: data.CLASS_NUM
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportIBPMasterProd":
+                    var aIData = {
+                      Location: data.LOCATION_ID
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportIBPAssemblyComp":
+                    var aIData = {
+                      Location: data.LOCATION_ID
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  case "exportRestrDetails":
+                    var aIData = {
+                      Location: data.LOCATION_ID
+                    };
+                    ScheData.push(aIData);
+                    break;
+                  default:
+                    var aIData = data.LocProdData;
+                    aIData = $.parseJSON(aIData);
+                    aIData.forEach(function (row) {
+                      row.Location = row.LOCATION_ID;
+                      row.Product = row.PRODUCT_ID;
+                    }, that);
+
+                    ScheData = aIData;
+                    break;
+                }
+              }
+
+            } else if (jobType === "SeedOrder") {
+              var data = $.parseJSON(aData[i].data);
+              var aIData = {
+                Location: data.LOCATION_ID,
+                Product: data.PRODUCT_ID,
+                CUSTOMER_GROUP: data.CUSTOMER_GROUP,
+                fromdate: data.FROMDATE,
+                todate: data.TODATE
+
+              };
+              ScheData.push(aIData);
+            }
+            else if (jobType === "") { // && oGModel.getProperty("/wFlag") === "X") {
+              var data = $.parseJSON(aData[i].data);
+              var aIData = {
+                Location: data.LOCATION_ID,
+                Product: data.PRODUCT_ID,
+                scenario: data.SCENARIO,
+                version: data.VERSION,
+                fromdate: data.FROMDATE,
+                todate: data.TODATE,
+                modelVersion: data.MODEL_VERSION
+
+              };
+              ScheData.push(aIData);
+            }
+
+            else {
+              ScheData = aData[i].data;
+              ScheData = $.parseJSON(ScheData);
+              ScheData = ScheData.vcRulesList;
+            }
+          }
+        }
+
+        that.JobDataModel.setData({
+          results: ScheData,
+        });
+        sap.ui.getCore().byId("idJobData").setModel(that.JobDataModel);
+        // 22-09-2022
+        var jobType = oGModel.getProperty("/JobType");
+        var iCount = 0;
+        // 22-09-2022
+        sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[2].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[3].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[5].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[6].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[7].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[8].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[9].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[10].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[11].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[12].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[13].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[14].setVisible(false);
+        sap.ui.getCore().byId("idJobData").getColumns()[15].setVisible(false);
+
+        switch (jobType) {
+          case "M":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[2].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[3].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[12].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[13].setVisible(true);
+            break;
+          case "P":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[2].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[3].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[5].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[6].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[13].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[15].setVisible(true);
+            break;
+          case "T":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            break;
+          case "F":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            break;
+          case "I":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            break;
+          case "E":
+            var oActionType = oGModel.getProperty("/IBPService");
+            if (oActionType === "exportIBPLocation" || oActionType === "exportIBPCustomer") {
+              MessageToast.show("There is no schedule data to display for the selected job type");
+              iCount = 1;
+            } else if (oActionType === "exportIBPMasterProd" || oActionType === "exportRestrDetails" ||
+              oActionType === "exportIBPLocProd" || oActionType === "exportIBPAssembly" ||
+              oActionType === "exportIBPAssemblyComp") {
+              sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            } else if (oActionType === "exportIBPClass") {
+              sap.ui.getCore().byId("idJobData").getColumns()[7].setVisible(true);
+            } else if (oActionType === "exportActCompDemand") {
+              sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[14].setVisible(true);
+            } else if (oActionType === "exportComponentReq") {
+              sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[9].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[10].setVisible(true);
+            } else {
+              sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+              sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            }
+            break;
+          case "S":
+            MessageToast.show("There is no schedule data to display for the selected job type");
+            iCount = 1;
+            break;
+          case "D":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[5].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[6].setVisible(true);
+            break;
+          case "A":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            break;
+          case "O":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            break;
+          case "PF":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[5].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[6].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[9].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[10].setVisible(true);
+            break;
+          case "SeedOrder":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[8].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[9].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[10].setVisible(true);
+            break;
+          case "":
+            sap.ui.getCore().byId("idJobData").getColumns()[0].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[1].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[4].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[5].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[6].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[9].setVisible(true);
+            sap.ui.getCore().byId("idJobData").getColumns()[10].setVisible(true);
+
+          default:
+            break;
+        }
+
+        if (iCount === 0) {
+          that._valueHelpDialogJobData.open();
+
+        }
+      },
+
+      onScheduleData: function (oEvent) {
+        var oJobId = oGModel.getProperty("/Jobdata").jobId,
+          oScheId = this.byId("idJobLogs").getSelectedItems()[0].getBindingContext().getObject().scheduleId;
+
+        // sap.ui.core.BusyIndicator.show();
+        that.byId("idScheLogData").setBusy(true);
+        that.getModel("JModel").callFunction("/readJobRunLogs", {
+          method: "GET",
+          urlParameters: {
+            jobId: oJobId,
+            scheduleId: oScheId,
+            page_size: 50,
+            offset: 0,
+          },
+          success: function (oData) {
+            // sap.ui.core.BusyIndicator.hide();
+            that.byId("idScheLogData").setBusy(false);
+            that.ConvertedTime(oData.results, "SC")
+            that.ScheLogModel.setData({
+              statusresults: oData.results,
+            });
+            that.byId("idScheLogData").setModel(that.ScheLogModel);
+
+            that.getView().byId("idScheLogData").setSelectedItem(that.getView().byId("idScheLogData").getItems()[0], true);
+            that.LogData = oData.results;
+            if (oData.results.length) {
+              that.onRunlogs();
+            }
+          },
+          error: function (error) {
+            // sap.ui.core.BusyIndicator.hide();
+            // MessageToast.show("Failed to get Schedule data");
+          },
+        });
+      },
+
+      /**
+       * This function is called when click on status button to get the job run logs.
+       * @param {object} oEvent -the event information.
+       */
+      onScheduleClick: function (oEvent) {
+
+        var oJobId = oGModel.getProperty("/Jobdata").jobId,
+          oScheId = this.byId("idJobLogs").getSelectedItems()[0].getBindingContext().getObject().scheduleId;
+
+        sap.ui.core.BusyIndicator.show();
+        that.getModel("JModel").callFunction("/readJobRunLogs", {
+          method: "GET",
+          urlParameters: {
+            jobId: oJobId,
+            scheduleId: oScheId,
+            page_size: 50,
+            offset: 0,
+          },
+          success: function (oData) {
+            sap.ui.core.BusyIndicator.hide();
+            that.ScheLogModel.setData({
+              statusresults: oData.results,
+            });
+            that.byId("idScheLogData").setModel(that.ScheLogModel);
+
+            that.getView().byId("idScheLogData").setSelectedItem(that.getView().byId("idScheLogData").getItems()[0], true);
+            that.LogData = oData.results;
+            if (oData.results.length) {
+              that.onRunlogs();
+            }
+            // that._valueHelpDialogScheLog.open();
+          },
+          error: function (error) {
+            sap.ui.core.BusyIndicator.hide();
+            MessageToast.show("Failed to get Schedule data");
+          },
+        });
+      },
+
+      /**
+     * Called when it routes to create job page.
+     * @param {object} oEvent -the event information.
+     */
+      // onCreateJob: function (oEvent) {
+      //   var oRouter = sap.ui.core.UIComponent.getRouterFor(that);
+      //   oRouter.navTo("CreateJob", {}, true);
+      // },
+
+
+      /**
+       * Called when 'Close/Cancel' button in any dialog is pressed.
+       */
+      onjobClose: function () {
+        that._valueHelpDialogJobData.close();
+      },
+
+      /**
+       * This function is called when click on Add Schedule button to add the new schedule to the existing Job.
+       */
+      onAddSchedule: function () {
+        oGModel.setProperty("/newSch", "X");
+        that.onCreateJob();
+      },
+
+      /**
+     * This function is called when click on delete button to delete the schedule.
+     * @param {object} oEvent -the event information.
+     */
+      onScheDelete: function (oEvent) {
+        var oJobId = oGModel.getProperty("/Jobdata").jobId,
+          oScheId = oEvent.getSource().getParent().getBindingContext().getObject().scheduleId;
+
+        oGModel.setProperty("/DeleteSchJob", oJobId);
+        oGModel.setProperty("/DeleteSch", oScheId);
+
+        var finalList = {
+          jobId: oJobId,
+          scheduleId: oScheId,
+        };
+
+        that.getModel("JModel").callFunction("/deleteMLJobSchedule", {
+          method: "GET",
+          urlParameters: {
+            scheduleDetails: JSON.stringify(finalList),
+          },
+          success: function (oData) {
+            sap.ui.core.BusyIndicator.hide();
+            if (oData.deleteMLJobSchedule.includes("true")) {
+              sap.m.MessageToast.show(
+                oGModel.getProperty("/DeleteSch") + ": Schedule Deleted"
+              );
+            }
+            // Calling funtion to get the updated data
+            that.onAfterRendering();
+          },
+          error: function (error) {
+            sap.ui.core.BusyIndicator.hide();
+            sap.m.MessageToast.show("Deletion failed");
+          },
+        });
+      },
+
+      /**
+       * This function is called when click on schedule update to update the schedule data.
+       * @param {object} oEvent -the event information.
+       */
+      onScheUpdate: function (oEvent) {
+        var oJobId = oGModel.getProperty("/Jobdata").jobId,
+          oScheId = oEvent.getSource().getParent().getBindingContext().getObject().scheduleId,
+          aData = oGModel.getProperty("/aJobDetails");
+
+        for (var i = 0; i < aData.length; i++) {
+          if (oScheId === aData[i].scheduleId) {
+            oGModel.setProperty("/aScheUpdate", aData[i]);
+          }
+        }
+
+        oGModel.setProperty("/UpdateSch", "X");
+        that.onCreateJob();
+      },
+
+      /**
+       * This function is called when click on schedule run logs.
+       * @param {object} oEvent -the event information.
+       */
+      onRunlogs: function (oEvent) {
+
+        var oJobId = oGModel.getProperty("/Jobdata").jobId,
+          aData = this.byId("idScheLogData").getSelectedItems()[0].getBindingContext().getObject();
+
+        var aLogData = that.LogData;
+        this.ScheRunLogModel = new JSONModel();
+
+        that.runLog = $.parseJSON(aData.runText);
+        that.ConvertedTime(that.runLog, "R")
+
+        that.ScheRunLogModel.setData({
+          results: that.runLog,
+        });
+        that.byId("idScheRunLogData").setModel(that.ScheRunLogModel);
+
+      },
+
+      /**
+       * Called when 'Close/Cancel' button in any dialog is pressed.
+       */
+      onScheRunLogClose: function () {
+        that._valueHelpDialogScheRunLog.close();
+      },
+
+
+      /** This Func used for Convereting UST time as per system Configuration  */
+      ConvertedTime: function (aData, flag) {
+        // that.zone = new Date().getTimezoneOffset().toString();
+        // that.opr = that.zone.slice(0,1);
+        // that.opr = new Date().toString().split("GMT")[1].slice(0, 1);
+        // if (that.zone.includes("-")) {
+        //   that.zHours = (Math.floor(that.zone.slice(1) / 60)) * 60 * 60 * 1000;
+        //   that.zMin = (that.zone.slice(1) % 60) * 60 * 1000;
+        // } else {
+        //   that.zHours = (Math.floor(that.zone / 60)) * 60 * 60 * 1000;
+        //   that.zMin = (that.zone % 60) * 60 * 1000;
+        // }
+        const targetTimeZone = that.timezone;
+        if (flag == "J") {
+          aData.forEach(ele => {
+            const time = new Date(ele.time)
+            var endTime = new Date(ele.endTime);
+            var nextRunAt = new Date(ele.nextRunAt);
+            var startTime = new Date(ele.startTime);
+            // if (that.opr == "-") {
+            //   endTime.setTime(endTime.getTime() + (that.zHours + that.zMin));
+            //   nextRunAt.setTime(nextRunAt.getTime() + (that.zHours + that.zMin));
+            //   startTime.setTime(startTime.getTime() + (that.zHours + that.zMin));
+            //   time.setTime(time.getTime() + (that.zHours + that.zMin));
+            // }
+            // else {
+            //   endTime.setTime(endTime.getTime() + (that.zHours + that.zMin));
+            //   nextRunAt.setTime(nextRunAt.getTime() + (that.zHours + that.zMin));
+            //   startTime.setTime(startTime.getTime() + (that.zHours + that.zMin));
+            //   time.setTime(time.getTime() + (that.zHours + that.zMin));
+            // }
+            var opr = (targetTimeZone.split("UTC")[1]).slice(0, 1);
+            var hours = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[0];
+            var min = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[1];
+            var mHours = hours * 60 * 60 * 1000;
+            var mMins = min * 60 * 1000;
+            if (opr == "-") {
+              endTime.setTime(endTime.getTime() - (mHours + mMins));
+              nextRunAt.setTime(nextRunAt.getTime() - (mHours + mMins));
+              startTime.setTime(startTime.getTime() - (mHours + mMins));
+              time.setTime(time.getTime() - (mHours + mMins));
+            }
+            else {
+              endTime.setTime(endTime.getTime() + (mHours + mMins));
+              nextRunAt.setTime(nextRunAt.getTime() + (mHours + mMins));
+              startTime.setTime(startTime.getTime() + (mHours + mMins));
+              time.setTime(time.getTime() + (mHours + mMins));
+            }
+            const convertedDate1 = endTime.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            const convertedDate2 = nextRunAt.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            const convertedDate3 = startTime.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            const convertedDate4 = time.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            // return convertedDate
+            ele.endTime = convertedDate1;
+            ele.nextRunAt = convertedDate2
+            ele.startTime = convertedDate3
+            ele.time = convertedDate4
+            // return aData
+          });
+        }
+        else if (flag == "SC") {
+          aData.forEach(ele => {
+            const completionTimestamp = new Date(ele.completionTimestamp)
+            var executionTimestamp = new Date(ele.executionTimestamp);
+            var scheduleTimestamp = new Date(ele.scheduleTimestamp);
+            // if (that.opr == "-") {
+            //   completionTimestamp.setTime(completionTimestamp.getTime() + (that.zHours + that.zMin));
+            //   executionTimestamp.setTime(executionTimestamp.getTime() + (that.zHours + that.zMin));
+            //   scheduleTimestamp.setTime(scheduleTimestamp.getTime() + (that.zHours + that.zMin));
+            // }
+            // else {
+            //   completionTimestamp.setTime(completionTimestamp.getTime() + (that.zHours + that.zMin));
+            //   executionTimestamp.setTime(executionTimestamp.getTime() + (that.zHours + that.zMin));
+            //   scheduleTimestamp.setTime(scheduleTimestamp.getTime() + (that.zHours + that.zMin));
+            // }
+            var opr = (targetTimeZone.split("UTC")[1]).slice(0, 1);
+            var hours = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[0];
+            var min = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[1];
+            var mHours = hours * 60 * 60 * 1000;
+            var mMins = min * 60 * 1000;
+            if (opr == "-") {
+              completionTimestamp.setTime(completionTimestamp.getTime() - (mHours + mMins));
+              executionTimestamp.setTime(executionTimestamp.getTime() - (mHours + mMins));
+              scheduleTimestamp.setTime(scheduleTimestamp.getTime() - (mHours + mMins));
+            }
+            else {
+              completionTimestamp.setTime(completionTimestamp.getTime() + (mHours + mMins));
+              executionTimestamp.setTime(executionTimestamp.getTime() + (mHours + mMins));
+              scheduleTimestamp.setTime(scheduleTimestamp.getTime() + (mHours + mMins));
+            }
+            const convertedDate1 = completionTimestamp.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            const convertedDate2 = executionTimestamp.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            const convertedDate3 = scheduleTimestamp.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+            // return convertedDate
+            ele.completionTimestamp = convertedDate1;
+            ele.executionTimestamp = convertedDate2
+            ele.scheduleTimestamp = convertedDate3
+            // return aData
+          });
+        }
+        else {
+          if (flag == "R") {
+            aData.forEach(ele => {
+              const time = new Date(ele.time)
+              // if (that.opr == "-") {
+              //   time.setTime(time.getTime() + (that.zHours + that.zMin));
+              // }
+              // else {
+              //   time.setTime(time.getTime() + (that.zHours + that.zMin));
+
+              // }
+              var opr = (targetTimeZone.split("UTC")[1]).slice(0, 1);
+              var hours = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[0];
+              var min = ((targetTimeZone.split("UTC")[1]).slice(1)).split(":")[1];
+              var mHours = hours * 60 * 60 * 1000;
+              var mMins = min * 60 * 1000;
+              if (opr == "-") {
+                time.setTime(time.getTime() - (mHours + mMins));
+              }
+              else {
+                time.setTime(time.getTime() + (mHours + mMins));
+              }
+              const convertedDate1 = time.toLocaleString('en-US', { dateStyle: "medium", timeStyle: "medium", hour12: true });
+              // return convertedDate
+              ele.time = convertedDate1;
+              // return aData
+            });
+          }
+
+        }
+
+      },
+      /** 
+       * Setting TimeZone in UST
+      */
+      onTimeZone: function () {
+        that.oTModel = that.getOwnerComponent().getModel("BModel");
+        var promise = new Promise((resolve, reject) => {
+          that.getOwnerComponent().getModel("BModel").read("/getUserPreferences", {
+            filters: [
+              new Filter("PARAMETER", FilterOperator.EQ, "TIMEZONE")
+            ],
+            success: function (oData) {
+              if (oData.results[0].PARAMETER_VALUE.includes("(")) {
+                var length = oData.results[0].PARAMETER_VALUE.length - 1;
+                that.timezone = oData.results[0].PARAMETER_VALUE.slice(1, length);
+              } else {
+                that.timezone = oData.results[0].PARAMETER_VALUE;
+              }
+              if (that.timezone === "" || that.timezone === undefined || that.timezone === null) {
+                that.timezone = "UTC+00:00"
+              }
+              resolve(that.timezone);
+              that.oTModel.setProperty("/timezone", that.timezone);
+            },
+            error: function (error) {
+              reject(error);
+              console.log(error)
+            }
+          });
+        });
+        return promise;
+      }
+    });
+  });

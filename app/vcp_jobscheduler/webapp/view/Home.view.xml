@@ -1,0 +1,208 @@
+
+<mvc:View controllerName="vcpapp.vcpjobschedulersequence.controller.Home" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	displayBlock="true" xmlns="sap.m" xmlns:m="sap.m" xmlns:l="sap.ui.layout" xmlns:ux="sap.uxap" xmlns:f="sap.ui.layout.form"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:u="sap.ui.unified">
+
+	<!-- <PullToRefresh id="pullToRefresh" refresh="onRefresh"/> -->
+	<ux:ObjectPageLayout id="ObjectPageLayout1">
+		<ux:headerTitle>
+			<ux:ObjectPageDynamicHeaderTitle>
+				<ux:expandedHeading>
+					<HBox>
+						<Label id="idVariantName" required="false" text="" class="Text"/>
+						<ToggleButton id="idDropDown" icon="sap-icon://slim-arrow-down" press="onDropDownPress"/>
+						<!-- <ToolbarSpacer/>
+						<Title text="{i18n>title}" class="TitleClass" titleAlignment="Center" wrapping="true"/>
+						<ToolbarSpacer/> -->
+						<!-- <Button class="hdrBtnMarginHdr" type="Emphasized" icon="sap-icon://sys-help" press="onNavPress" tooltip="Help Document" id="nav2" /> -->
+					</HBox>
+				</ux:expandedHeading>
+				<ux:snappedHeading>
+					<HBox fitContainer="true" alignItems="Center">
+					<!-- <ToolbarSpacer/>
+						<Title text="{i18n>title}" wrapping="true" class="TitleClass"/>
+						<ToolbarSpacer/> -->
+						<!-- <Button class="hdrBtnMarginHdr1" type="Emphasized" icon="sap-icon://sys-help" press="onNavPress" tooltip="Help Document" id="nav" /> -->
+					</HBox>
+				</ux:snappedHeading>
+				<ux:actions>
+					<Button text="{i18n>variant}" press="onMaintainVariant" id="idMvariant" type="Ghost"></Button>
+					<Button text="{i18n>createjob}" press="onCreateJob" id="idcreate" type="Ghost"></Button>
+					<Button tooltip="Refresh" icon="sap-icon://refresh" press="onRefresh" type="Emphasized"/>
+					<Button tooltip="Sort" icon="sap-icon://sort" press="handleSortButtonPressed" type="Emphasized"/>
+					<!-- <OverflowToolbarButton icon="sap-icon://action" type="Transparent" text="Share" tooltip="action"/> -->
+				</ux:actions>
+			</ux:ObjectPageDynamicHeaderTitle>
+		</ux:headerTitle>
+		<ux:headerContent>
+			<Bar >
+				<contentLeft>
+					<SearchField id="headSearch" liveChange="handleSearch" placeholder="Job Name/Status, Template"/>
+					<ToolbarSpacer />
+					
+                                            
+				</contentLeft>
+				<contentRight>
+					<HBox id="LayerGroupJS" visible="false">
+                                                <Label text="Group" class="sapUiTinyMarginTop sapUiTinyMarginEnd"/>
+                                            <Select id="idLayerJS" change="onLayerCode" selectedKey="A">
+                                                <core:ListItem key="A" text="All"/>
+                                                <core:ListItem key="I" text="Internal"/>
+                                                <core:ListItem key="E" text="External"/>
+                                                
+                                            </Select>
+                                            </HBox>
+				</contentRight>
+			</Bar>
+		</ux:headerContent>
+		<ux:sections>
+			<ux:ObjectPageSection>
+				<ux:subSections>
+					<ux:ObjectPageSubSection>
+						<ux:blocks>
+							<VBox>
+								<!-- <Toolbar>
+                                    <content>
+                                        <SearchField id="headSearch" liveChange="handleSearch"
+                                            placeholder="Job Name/Status, Template" width="250px" />
+                                        <ToolbarSpacer />
+                                        <Button text="{i18n>createjob}" press="onCreateJob" type="Ghost"></Button>
+                                        <Button tooltip="Refresh" icon="sap-icon://refresh" press="onRefresh"
+                                            type="Emphasized" />
+                                        <Button tooltip="Sort" icon="sap-icon://sort" press="handleSortButtonPressed"
+                                            type="Emphasized" />
+                                    </content>
+                                </Toolbar> -->
+								<!-- </headerToolbar> -->
+								<IconTabBar id="operationsITB" expanded="true" select="onTabChange" class="sapUiResponsiveContentPadding">
+									<items>
+										<IconTabFilter id="ActiveTab" iconColor="Neutral" text="Active Jobs" key="Active Jobs">
+											<Table id="jobList" items="{path: '/Jobresults', sorter: {path: 'JOB_STARTTIME',descending:true}}" itemPress="onhandlePress" growingScrollToLoad="true" mode="SingleSelectMaster"
+												sticky="ColumnHeaders" selectionChange="onhandlePress" rememberSelections="false">
+												<columns>
+													<Column hAlign="Left" vAlign="Middle" width="8vw">
+														<Text text="{i18n>jobstatus}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" width="22vw">
+														<Text text="{i18n>jobname}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" width="7vw">
+														<Text text="{i18n>steps}"/>
+													</Column>
+													<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+														<Text text="{i18n>jobtemplate}"/>
+													</Column>
+													<Column hAlign="Center" vAlign="Middle" width="7vw" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" >
+														<Text text="Recurrence"/>
+													</Column>
+													<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle" width="10vw">
+														<Text text="{i18n>startdate}"/>
+													</Column>
+													<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle" width="12vw">
+														<Text text="{i18n>createdby}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Tablet" popinDisplay="Inline" width="12vw">
+														<Text text=""/>
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{JOB_STATUS}"/>
+															<Text text="{JOB_NAME}"/>
+															<Text text="{TOTAL_STEPS}"/>
+															<Text text="{TEMPLATE_ID}"/>
+															<Button icon="sap-icon://repost" press="onRecur" tooltip="Get next execution details"
+																visible="{= ${JOB_TYPE} === 'Recurrence Pattern' ? true : false}" iconDensityAware="false" type="Emphasized"/>
+															<!-- <Text text="{path:'JOB_STARTTIME', formatter: '.formatter.gettimezone', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium', UTC: true }}" maxLines="2"/> -->
+															<Text text="{NewDate1}" maxLines="2"/>
+															<Text text="{CREATED_BY}"/>
+															<HBox>
+																<Button id="idEdit" icon="sap-icon://edit" enabled="{editJob}" press="onEdit" tooltip="Edit Template" iconDensityAware="false" type="Transparent"/>
+																<Button id="idActive" icon="sap-icon://activate" enabled="{editJob}" press="makeInactive" tooltip="Make Job InActive" iconDensityAware="false" type="Emphasized"
+																	class="sapUiTinyMarginBeginEnd"/>
+																<Button id="iddelete" icon="sap-icon://delete" enabled="{deleteJob}" press="onDelete" tooltip="Delete Job" iconDensityAware="false" type="Transparent"/>
+																<Button id="idRestart" icon="sap-icon://restart"  enabled="{editJob}" press="onRestartJob" tooltip="Restart Job" iconDensityAware="false" type="Emphasized"
+																	class="sapUiTinyMarginBegin" visible="{restart}"/>
+															</HBox>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</IconTabFilter>
+										<IconTabFilter id="InactiveTab" iconColor="Neutral" text="Inactive Jobs" key="Inactive Jobs">
+											<Table id="jobListI" items="{path: '/JobresultsI', sorter: {path: 'JOB_STARTTIME',descending:'true'}}" itemPress="onhandlePress" growingScrollToLoad="true" mode="SingleSelectMaster"
+												selectionChange="onhandlePress" rememberSelections="false">
+												<columns>
+													<Column hAlign="Left" vAlign="Middle">
+														<Text text="{i18n>jobstatus}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle">
+														<Text text="{i18n>jobname}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle">
+														<Text text="{i18n>steps}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" >
+														<Text text="{i18n>jobtemplate}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" >
+														<Text text="{i18n>startdate}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" >
+														<Text text="{i18n>createdby}"/>
+													</Column>
+													<Column hAlign="Left" vAlign="Middle">
+														<Text text=""/>
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{JOB_STATUS}"/>
+															<Text text="{JOB_NAME}"/>
+															<Text text="{TOTAL_STEPS}"/>
+															<Text text="{TEMPLATE_ID}"/>
+															<!-- <Text text="{path:'JOB_STARTTIME', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium', UTC: true }}" maxLines="2"/> -->
+															<Text text="{NewDate1}" maxLines="2"/>
+															<Text text="{CREATED_BY}"/>
+															<HBox>
+																<Button id="idEdit1" icon="sap-icon://edit" press="onEdit" tooltip="Edit Template" iconDensityAware="false" type="Transparent"/>
+																<Button id="idInActive" icon="sap-icon://activate" press="makeActive" tooltip="Make Job Active" iconDensityAware="false" type="Transparent"
+																	class="sapUiTinyMarginBeginEnd"/>
+																<Button id="idIdelete" icon="sap-icon://delete" press="onDelete" tooltip="Delete Job" iconDensityAware="false" type="Transparent"/>
+															</HBox>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</IconTabFilter>
+										
+									</items>
+								</IconTabBar>
+								<dependents>
+									<ResponsivePopover id="idPopover" showCloseButton="true" placement="Left" showHeader="false">
+										<f:SimpleForm id="SimpleFormDisplay354" editable="false" layout="ResponsiveGridLayout" labelSpanXL="6" labelSpanL="6" labelSpanM="6"
+											labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+											singleContainerFullSize="false">
+											<f:content>
+												<Label text="Next Run at"/>
+												<Text id="idnextrun" text=""/>
+												<Label text="Start Time"/>
+												<Text id="idstart" text=""/>
+												<Label text="End Time"/>
+												<Text id="idend" text=""/>
+											</f:content>
+										</f:SimpleForm>
+										<!-- </VBox> -->
+									</ResponsivePopover>
+								</dependents>
+							</VBox>
+						</ux:blocks>
+					</ux:ObjectPageSubSection>
+				</ux:subSections>
+			</ux:ObjectPageSection>
+		</ux:sections>
+	</ux:ObjectPageLayout>
+</mvc:View>
+

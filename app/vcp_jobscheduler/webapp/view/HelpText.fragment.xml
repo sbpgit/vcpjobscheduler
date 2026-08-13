@@ -1,0 +1,82 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc">
+	
+	<Dialog id="idCon" contentWidth="700px" showHeader="false">
+		<content>
+	<l:VerticalLayout class="sapUiContentPadding" width="100%">
+		    <MessageStrip
+				showIcon="true"
+				text="Comma (,)"
+				class="sapUiMediumMarginTop"/>
+				<TextArea value="By using a comma, you specify a list of values for a field. For example, the value 7,1 
+									for the Day of week field means every Saturday and every Sunday." 
+									growing="true" growingMaxLines="7" width="100%"/>
+
+			<MessageStrip
+				showIcon="true"
+				text="Colon (:)"
+				class="sapUiMediumMarginTop"/>
+				<TextArea value="By using a Colon, you specify a range of values for a field. For example, the value 3:7 for 
+				the Day of month field means from the 3rd to the 7th of the month, that is on days 3, 4, 5, 6, and 7 of the month."
+				growing="true" growingMaxLines="7" width="100%"/>
+
+				<TextArea value="You can combine the use of comma and colon to specify a list of ranges for a field. For example,
+				 the value 0:2,6:8 (without whitespace) for the Month field means January, February, March and July, August, 
+				 September." growing="true" growingMaxLines="7" width="100%"/>
+
+			<MessageStrip
+				showIcon="true"
+				text="Slash (/)"
+				class="sapUiMediumMarginTop"/>
+				<TextArea value="Using the slash has two different meanings depending on whether it is used in combination with a * or with a range (e.g. 7-17)"
+									growing="true" growingMaxLines="7" width="100%"/>
+
+				<TextArea value="*/z means: Every possible value that is divisible by z.
+									E.g. for the Day field, */3 means 3, 6, 9, …, 30.
+									
+									For the Hour field, */3 means 0, 3, 6, …, 21." growing="true" rows="2"  growingMaxLines="7" width="100%"/>
+				<!-- <TextArea value="E.g. for the Day field, */3 means 3, 6, 9, …, 30." rows="1" width="100%"/>
+				<TextArea value="For the Hour field, */3 means 0, 3, 6, …, 21." rows="1" width="100%"/> -->
+				<TextArea value="For the Month field, */3 means January, April, July, October." rows="1" width="100%"/>
+				<TextArea value="he value */15 for the Minute field means every quarter of an hour, starting from 0, that is 0, 15, 30, 45 within one hour." growing="true" growingMaxLines="7" width="100%"/>
+				<TextArea value="x:y/z means every z from x to y.
+				E.g. for the Day field, 1:31/3 means 1, 4, 7, …, 28, 31. (Note that this is completely different from */3)." rows="1" width="100%"/>
+				<!-- <TextArea value="E.g. for the Day field, 1-31/3 means 1, 4, 7, …, 28, 31. (Note that this is completely different from */3)." rows="1" width="100%"/> -->
+				<TextArea value="For the Hour field, 0-23/3 means 0, 3, 6, 9, …, 21. (Note that this is the same as */3.)
+				In the Hour field, */2 are the even hours, whereas 1:23/2 are the odd hours." rows="2" width="100%"/>
+				<TextArea value="In the Hour field, */2 are the even hours, whereas 1:23/2 are the odd hours." rows="1" width="100%"/>
+				<!-- <TextArea value="*/z means: Every possible value that is divisible by z." growing="true" growingMaxLines="7" width="100%"/> -->
+
+
+		</l:VerticalLayout>
+
+		<Table id="idCronValues" items="{path: '/results'}" rememberSelections="false"  >
+                        <columns>
+                        <Column hAlign="Left" >
+                                <Text text="Expression" />
+                            </Column>
+                            <Column hAlign="Left" >
+                                <Text text="Usage" />
+                            </Column>
+                            <Column hAlign="Left" >
+                                <Text text="Value" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                <Text text="{Expression}"/>
+                                    <Text text="{Usage}" />
+                                    <Text text="{Value}" />
+									</cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+
+		</content>
+		<buttons>
+				<Button type='Reject' text="{i18n>close}" press="onCloseHelp"></Button>
+		</buttons>
+		
+	</Dialog>
+</core:FragmentDefinition>

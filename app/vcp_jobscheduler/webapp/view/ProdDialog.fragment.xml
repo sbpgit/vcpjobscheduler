@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<!-- <SelectDialog id="prodSlctListJSS" initialFocus="SearchField" title="{i18n>PrdId}" rememberSelections="false" search="handleSearch" liveChange="handleSearch"
+		confirm="handleSelection" cancel="handleClose" multiSelect="false"  contentWidth="320px" items="{/results}" 
+        selectionChange="handleProdChange" growing="false">
+		<StandardListItem title="{PRODUCT_ID}" description="{PROD_DESC}" type="Active"/>
+	</SelectDialog> -->
+
+	<TableSelectDialog id="prodSlctListJSS" initialFocus="SearchField" search="handleSearch" liveChange="handleSearch" 
+	rememberSelections="false" growing="true" growingThreshold="200" growingScrollToLoad="false" confirm="handleSelection" cancel="handleClose"  title="Select Products" 
+		items="{/results}"  multiSelect="true" contentWidth="300px" contentHeight="auto" titleAlignment="Center">
+			<columns>
+			<Column width="auto" hAlign="Left">
+				<header>
+					<Text text="Products" />
+				</header>
+			</Column>
+			<Column width="auto" hAlign="Left" visible="true">
+				<header>
+					<Text text="" />
+				</header>
+			</Column>
+			</columns>
+			<ColumnListItem vAlign="Middle">
+			<ObjectIdentifier title="{PRODUCT_ID}" text="{PROD_DESC}" ></ObjectIdentifier>
+			<ObjectIdentifier title="{REF_PRODID}" ></ObjectIdentifier>
+			</ColumnListItem>
+		</TableSelectDialog>
+</core:FragmentDefinition>

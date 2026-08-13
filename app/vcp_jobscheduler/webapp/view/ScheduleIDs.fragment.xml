@@ -1,0 +1,161 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+	<Dialog id="multiSchLogs" contentWidth="1200px" contentHeight="800px" title="Schedule Details"  >
+		<!-- <content > -->
+			<l:ResponsiveSplitter defaultPane="default">
+        <l:PaneContainer orientation="Vertical" id="orient">
+            <l:SplitPane id="default" >
+                <l:layoutData>
+                    <l:SplitterLayoutData size="{sizes>/pane1}" />
+                </l:layoutData>
+                <!-- <Panel  height="100%"> -->
+                <!-- <Page showHeader="false" height="1200px">
+                    <Toolbar>
+                    <ToolbarSpacer/>
+                    <Title  text="Job Details" class="boldText"></Title>
+                    <ToolbarSpacer/>
+                    <ToolbarSpacer/>
+                        <Button id="btnRefresh" tooltip="Refresh" icon="sap-icon://refresh"  press="onScheduleClick"  />
+                        <Button id="btnaddSche" tooltip="{i18n>addsch}" icon="sap-icon://create-entry-time" press="onAddSchedule"
+                                enabled="{= ${oGModel>/wFlag} === 'X' ? false : true }"  />
+                    </Toolbar> -->
+
+                    <Table id="idJobLogs" items="{path: '/results'}" rememberSelections="true" mode="SingleSelectMaster" selectionChange="onScheduleClick">
+                        <columns class="boldText">
+                            <Column hAlign="Left" vAlign="Middle" width="100px" class="boldText">
+                                <Text text="{i18n>type}" />
+                            </Column>
+                            <Column hAlign="Left" width="115px" vAlign="Middle" visible="{= ${oGModel>/flagcron} === 'X' ? true : false }">
+                                <Text text="{i18n>cron}" />
+                            </Column>
+                            <Column hAlign="Left" vAlign="Middle" visible="false">
+                                <Text text="{i18n>onetime}" />
+                            </Column>
+                            <Column hAlign="Left" vAlign="Middle">
+                                <Text text="{i18n>nextRunAt}" />
+                            </Column>
+                            <Column hAlign="Left" vAlign="Middle">
+                                <Text text="{i18n>startTime}" />
+                            </Column>
+                            <Column hAlign="Left" vAlign="Middle">
+                                <Text text="{i18n>endTime}" />
+                            </Column>
+                            <!-- <Column hAlign="Left" vAlign="Middle">
+                                <Text text="" />
+                            </Column> -->
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="{type}" />
+                                    <Text text="{cron}" />
+                                    <Text text="{time}" />
+                                    <Text text="{nextRunAt}" />
+                                    <Text text="{startTime}" />
+                                    <Text text="{endTime}" />
+                                    <!-- <Text text="{path:'nextRunAt', formatter: '.formatter.gettimezone1'}" />
+                                    <Text text="{path:'startTime', formatter: '.formatter.gettimezone1'}" />
+                                    <Text text="{path:'endTime', formatter: '.formatter.gettimezone1'}" /> -->
+                                    <!-- <HBox>
+                                    <Button id="idscheData" icon="sap-icon://form" tooltip="Schedule Data" press="onScheData" iconDensityAware="false" type="Transparent" />
+                                        <Button id="idScheDele" icon="sap-icon://decline" press="onScheDelete" tooltip="Delete Schedule" iconDensityAware="false" type="Transparent" />
+                                    </HBox> -->
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                <!-- </Page> -->
+
+                <!-- </Panel> -->
+            </l:SplitPane>
+            <l:PaneContainer resize=".onInnerContainerResize">
+                <l:SplitPane requiredParentWidth="600">
+                    <l:layoutData>
+                        <l:SplitterLayoutData size="{sizes>/pane2}" />
+                    </l:layoutData>
+                    <!-- <Panel> -->
+                        <!-- <Page title="Schedule Logs"> -->
+                        <Table id="idScheLogData" items="{path: '/statusresults'}" rememberSelections="true" mode="SingleSelectMaster" selectionChange="onMultiRunlogs">
+                            <columns>
+                                <Column hAlign="Left" vAlign="Middle">
+                                    <Text text="{i18n>ScheTime}" />
+                                </Column>
+                                <Column hAlign="Left" vAlign="Middle">
+                                    <!-- <Text text="{i18n>execTime}" /> -->
+                                    <Text text="Triggered Time" />
+                                </Column>
+                                <Column hAlign="Left" vAlign="Middle">
+                        <Text text="{i18n>compTime}" />
+                    </Column>
+                                <Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                                    <Text text="{i18n>status}" />
+                                </Column>
+                                <Column hAlign="Left" vAlign="Middle" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                        <Text text="{i18n>state}" />
+                    </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{scheduleTimestamp}" />
+                                        <Text text="{executionTimestamp}" />
+                                        <Text text="{completionTimestamp}" />
+                                        <!-- <Text text="{path:'scheduleTimestamp', formatter: '.formatter.gettimezone1'}" />
+                                        <Text text="{path:'executionTimestamp', formatter: '.formatter.gettimezone1'}" />
+                                        <Text text="{path:'completionTimestamp', formatter: '.formatter.gettimezone1'}" /> -->
+                                        <Text text="{runStatus}" />
+                                        <Text text="{runState}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                        <!-- </Page> -->
+                    <!-- </Panel> -->
+                </l:SplitPane>
+                <l:SplitPane requiredParentWidth="600">
+                    <l:layoutData>
+                        <l:SplitterLayoutData size="{sizes>/pane3}" />
+                    </l:layoutData>
+                    <!-- <Page title="Run Logs"> -->
+                        <Table id="idScheRunData" items="{path: '/results'}">
+                            <columns>
+                                <!-- <Column hAlign="Left" vAlign="Middle">
+                                    <Text text="{i18n>time}" />
+                                </Column> -->
+                                <Column hAlign="Left" vAlign="Middle" width="400px">
+                                    <Text text="{i18n>message}" />
+                                </Column>
+                                <!-- <Column hAlign="Left" vAlign="Right">
+                                    <Text text="{i18n>state}" />
+                                </Column>
+                                <Column hAlign="Left" vAlign="Middle">
+                                    <Text text="{i18n>code}" />
+                                </Column> -->
+                                <Column hAlign="Left" vAlign="Right">
+                                    <Text text="State/ Code" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <!-- <Text text="{time}" />
+                                        <Text text="{text}" /> -->
+                                        <ObjectIdentifier title="{text}" text="{time}" />
+                                        <!-- <ObjectIdentifier title="{text}" text="{path:'time', formatter: '.formatter.gettimezone1'}" /> -->
+                                        <ObjectIdentifier title="{type}" text="{code}" />
+                                        <!-- <Text text="{type}" />
+                                        <Text text="{code}" /> -->
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    <!-- </Page> -->
+                </l:SplitPane>
+            </l:PaneContainer>
+        </l:PaneContainer>
+    </l:ResponsiveSplitter>
+		<!-- </content> -->
+		<buttons>
+				<Button type='Reject' text="Close" press="onMultiSchedLogsClose"></Button>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

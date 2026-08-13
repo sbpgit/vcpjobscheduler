@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<!-- <SelectDialog id="LocSlctListJSS" initialFocus="SearchField" title="{i18n>loc}" search="handleSearch" liveChange="handleSearch" rememberSelections="false"
+		confirm="handleSelection" selectionChange="handleDemdLocChange" cancel="handleClose" items="{/Locitems}" growing="false">
+		<StandardListItem title="{LOCATION_ID}" description="{LOCATION_DESC}" type="Active"/>
+	</SelectDialog> -->
+
+	<TableSelectDialog id="variantSlctListJSS" initialFocus="SearchField" search="handleSearch" liveChange="handleSearch" 
+	rememberSelections="false" growing="true" growingThreshold="" confirm="handleSelection" cancel="handleClose"  title="Select Variant" 
+		items="{/results}"  multiSelect="false" contentWidth="300px" contentHeight="auto" titleAlignment="Center">
+			<columns>
+			<Column width="auto" hAlign="Left">
+				<header>
+					<Text text="Variant" />
+				</header>
+			</Column>
+			</columns>
+			<ColumnListItem vAlign="Middle">
+			<ObjectIdentifier title="{VARIANT_NAME}" text="{VARIANT_DESC}"/>
+			
+			</ColumnListItem>
+		</TableSelectDialog>
+</core:FragmentDefinition>

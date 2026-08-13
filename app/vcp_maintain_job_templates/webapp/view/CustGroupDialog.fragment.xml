@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <SelectDialog id="CustGroupSlctListT" title="Customer Group" rememberSelections="false" search="handleSearch" liveChange="handleSearch"
+       multiSelect="true" confirm="handleSelection" cancel="handleClose"   contentWidth="320px" items="{/results}"
+        selectionChange="handleCustGroupChange" growing="false">
+        <StandardListItem title="{CUSTOMER_GROUP}" description="{CUSTOMER_DESC}" type="Active"/>
+    </SelectDialog>
+</core:FragmentDefinition>

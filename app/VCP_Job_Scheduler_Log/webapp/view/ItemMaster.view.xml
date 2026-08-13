@@ -1,0 +1,44 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="vcpapp.vcpjobschedularlogs.controller.ItemMaster" xmlns:html="http://www.w3.org/1999/xhtml" class="ItemMaster">
+    <Page showHeader="false" width="200px">
+        <content>
+            <SearchField id="headSearch" liveChange="onSearch" placeholder="Job Id/ Name" />
+            <Table id="jobList" items="{path: '/results'}" growingScrollToLoad="true" rememberSelections="true" 
+            itemPress="onhandlePress" mode="SingleSelectMaster" selectionChange="onhandlePress" sticky="ColumnHeaders"
+            busy="true" >
+                <columns>
+                    <Column hAlign="Left" vAlign="Middle">
+                        <Text text="{i18n>jobid}" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <VBox>
+                                <Link id="target" text="{jobId}" press="handleLinkPress">
+                                    <dependents>
+                                        <ResponsivePopover id="popover" showHeader="false">
+                                            <content>
+                                                <List id="idData" items="{path: '/resultsData'}">
+                                                    <items>
+                                                        <ObjectListItem title="Description :" number="{description}">
+                                                            <attributes>
+                                                                <ObjectAttribute title="Start Time" text="{startTime}" />
+                                                                <ObjectAttribute title="End Time" text="{endTime}" />
+                                                                <ObjectAttribute title="Created At" text="{createdAt}" />
+                                                            </attributes>
+                                                        </ObjectListItem>
+                                                    </items>
+                                                </List>
+                                            </content>
+                                        </ResponsivePopover>
+                                    </dependents>
+                                </Link>
+                                <Text text="{name}" />
+                            </VBox>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

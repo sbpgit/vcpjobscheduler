@@ -1,0 +1,45 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+
+	<SelectDialog id="TempSlctListJSS" initialFocus="SearchField" title="{i18n>template}" search="handleSearch" liveChange="handleSearch" rememberSelections="false"
+		confirm="handleSelection" cancel="handleClose" items="{/TemplateItems}"  growing="false">
+		<StandardListItem title="{TEMPLATE_ID}" description="{TEMPLATE_DESC}" info="{path:'LEVEL', formatter: '.formatter.getLevel'}" type="Active"/>
+	</SelectDialog>
+
+	<!-- <Dialog id="idEnq" contentWidth="350px" title="{i18n>template}" >
+		<content >
+			<Table id="TempSlctListJSS" mode="SingleSelectMaster" selectionChange="handleSelection"
+				items="{path: '/TemplateItems'}" sticky="ColumnHeaders">
+				<headerToolbar>
+					<Toolbar>
+						<SearchField id="idEnquiry" liveChange="handleSearch" width="200px" placeholder="{i18n>enqSearch}"/>
+						<ToolbarSpacer/>
+						<HBox id="LayerGroupJS" visible="false">
+                                                <Label text="Group" class="sapUiTinyMarginTop sapUiTinyMarginEnd"/>
+                                            <Select id="idLayerJS" change="onLayerCode" selectedKey="I">
+                                                <core:ListItem key="I" text="Internal"/>
+                                                <core:ListItem key="E" text="External"/>
+                                                
+                                            </Select>
+                                            </HBox>
+						
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column hAlign="Begin" vAlign="Middle">
+						<Text text="{i18n>WO}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier title="{TEMPLATE_ID}" text="{TEMPLATE_DESC}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<buttons>
+				<Button text="Cancel" press="handleClose" type="Accept"></Button>
+		</buttons>
+	</Dialog> -->
+</core:FragmentDefinition>

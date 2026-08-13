@@ -1,0 +1,64 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="vcpapp.vcpjobschedulersequence.controller.ItemMaster" class="ItemMaster">
+	<Page showHeader="false">		
+		<content>
+			<HBox class="sapUiTinyMarginBeginEnd">
+				<SearchField id="idVariantSearch" liveChange="variantSearch" placeholder="Job Feed Name" />
+				<Button text="Create Job Feed" id="btnCreateJobFeed"  press="CreateVarient" class="sapUiTinyMarginBegin"></Button>
+			</HBox>
+			<!-- <List id="spoolItemList" items="{path: '/results', sorter: {path: 'Control_No'}}" growingScrollToLoad="true" growing="true"
+				mode="SingleSelectMaster" selectionChange="handlePress" rememberSelections="false" >
+				<items>
+					<StandardListItem title="{Control_No}" description="{Spool_No}" info="{Spool_Sts}"
+						infoState="{path: 'Spool_Sts', formatter: '.formatter.getState'}" type="Active"/>
+				</items>
+			</List> -->
+            <Table id="idVariantList" items="{path: '/Variantresults'}"  growingScrollToLoad="true" mode="SingleSelectMaster"
+                    sticky="ColumnHeaders" rememberSelections="false" selectionChange="onhandleVariantPress">
+                    <columns>
+                        <Column hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>Variant}"/>
+                        </Column>
+                        <Column hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>reftemplate}"/>
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>steps}"/>
+                        </Column>                        
+                        <Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>createdby}"/>
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>createdat}"/>
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>changedby}"/>
+                        </Column>
+                        <Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline" hAlign="Left" vAlign="Middle">
+                            <Text text="{i18n>changedat}"/>
+                        </Column>
+                        <Column hAlign="Right" vAlign="Middle">
+                            <Text text=""/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{VARIANT_NAME}"/>
+                                <Text text="{TEMPLATE_ID}"/>
+                                <Text text="{STEPS}"/>
+                                <Text text="{CREATED_BY}"/>
+                                <Text text="{path: 'CREATED_DATE', type : 'sap.ui.model.type.Date', formatOptions: { pattern: 'MM/dd/yyyy' }}"/>
+                                <Text text="{CHANGED_BY}"/>
+                                <Text text="{path: 'CHANGED_DATE', type : 'sap.ui.model.type.Date', formatOptions: { pattern: 'MM/dd/yyyy' }}"/>
+                                <HBox >
+                                <Button id="idEditJF" icon="sap-icon://edit" press="onhandleVariantPress" type="Transparent" tooltip="Edit"/>
+                                <Button id="idCopy" icon="sap-icon://copy" press="onhandleVariantPress" type="Transparent" tooltip="Copy"/>
+                                <Button id="idDelete" icon="sap-icon://delete" press="OnDelete" type="Transparent" tooltip="Delete"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+		</content>
+	</Page>
+</mvc:View>

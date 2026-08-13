@@ -1,0 +1,36 @@
+<!-- <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog  contentWidth="500px" showHeader="false">
+        <content>
+        <VBox >
+        <Title text="" />
+            <Title class="sapUiSmallMarginBegin" text="Please provide step# from where you want to resume the job." />
+            <Input id="idStep" value="" width="200px" class="sapUiSmallMarginBegin" />
+            </VBox>
+ 
+        </content>
+        <buttons>
+        <Button type='Accept' text="{i18n>Confirm}" press="onConfirmResumeJob"></Button>
+                <Button type='Reject' text="{i18n>close}" press="oncloseResumeJob"></Button>
+        </buttons>
+       
+    </Dialog>
+    
+</core:FragmentDefinition> -->
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog  contentWidth="400px" showHeader="false">
+        <content>
+        <VBox >
+        <Title text="" />
+            <Title class="sapUiSmallMarginBegin" text="Please Provide Variant name to save the variant" />
+            <Input id="idVarName" value="" width="200px" liveChange="onvariantNameChange" class="sapUiSmallMarginBegin" />
+            </VBox>
+ 
+        </content>
+        <buttons>
+        <Button type='Accept' text="{i18n>Confirm}" press="onConfirmVariant"></Button>
+                <Button type='Reject' text="{i18n>close}" press="oncloseVariant"></Button>
+        </buttons>
+       
+    </Dialog>
+    
+</core:FragmentDefinition>

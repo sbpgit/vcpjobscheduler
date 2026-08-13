@@ -1,0 +1,178 @@
+_schema-version: 3.3.0
+ID: vcpjobscheduler
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+ 
+  - name: vcpjobscheduler-app-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: vcpjobscheduler-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+    build-parameters:
+      build-result: resources
+      requires:
+      - artifacts:
+        - vcpappvcpjobschedulersequence.zip
+        name: vcpappvcpjobschedulersequence
+        target-path: resources/
+        
+      - artifacts:
+        - cdm.json
+        name: vcpjobscheduler-workzone-cdm
+        target-path: resources/
+
+      - artifacts:
+        - vcpappvcpjobschedularlogs.zip
+        name: vcpappvcpjobschedularlogs
+        target-path: resources/
+
+      - artifacts:
+        - vcpappvcptemplate.zip
+        name: vcpappvcptemplate
+        target-path: resources/
+
+  - name: vcpappvcptemplate
+    type: html5
+    path: app/vcp_maintain_job_templates
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+      - npm install
+      - npm run build:cf
+      - rm -rf node_modules
+      supported-platforms: []
+      ignore:
+      - node_modules/ 
+      - dist/   
+
+  - name: vcpappvcpjobschedularlogs
+    type: html5
+    path: app/VCP_Job_Scheduler_Log
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+      - npm install
+      - npm run build:cf
+      - rm -rf node_modules 
+      supported-platforms: []  
+      ignore:
+      - node_modules/ 
+      - dist/ 
+
+  - name: vcpjobscheduler-destinations
+    type: com.sap.application.content
+    requires:
+      - name: vcpjobscheduler-repo-host
+        parameters:
+          service-key:
+            name: vcpjobscheduler-repo-host-key
+      - name: vcpjobscheduler-html5-runtime
+        parameters:
+          service-key:
+            name: vcpjobscheduler-html5-app-runtime-service-key
+      - name: vcpjobscheduler-destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        subaccount:
+          destinations:
+            - Name: vcpjobscheduler_cdm
+              ServiceInstanceName: vcpjobscheduler-html5-runtime
+              ServiceKeyName: vcpjobscheduler-html5-app-runtime-service-key
+              URL: https://html5-apps-repo-rt.cfapps.us10.hana.ondemand.com/applications/cdm/vcpjobscheduler
+              sap.cloud.service: vcpjobscheduler
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+          
+  - name: vcpjobscheduler-workzone-cdm
+    type: html5
+    path: workzone
+    build-parameters:
+      build-result: .
+      supported-platforms: []
+
+  - name: vcpappvcpjobschedulersequence
+    type: html5
+    path: app/vcp_jobscheduler
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+      - npm install
+      - npm run build:cf
+      - rm -rf node_modules 
+      supported-platforms: []  
+      ignore:
+      - node_modules/ 
+      - dist/ 
+    
+
+resources:
+  - name: vcpjobscheduler-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: vcpjobscheduler-${org}-${space}
+        tenant-mode: shared
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+  - name: vcpjobscheduler-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        ExposeToSubaccounts: true
+        HTML5Runtime_enabled: true
+        init_data:
+          subaccount:
+            destinations:
+            - Authentication: NoAuthentication
+              Name: ui5
+              ProxyType: Internet
+              Type: HTTP
+              URL: https://ui5.sap.com
+            - Authentication: NoAuthentication
+              CEP.HTML5contentprovider: true
+              Name: vcpjobscheduler-workzone-runtime
+              ProxyType: Internet
+              Type: HTTP
+              URL: https://mttsbpdigital.launchpad.cfapps.us10.hana.ondemand.com
+            existing_destinations_policy: update
+
+  - name: vcpjobscheduler-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  - name: vcpjobscheduler-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+

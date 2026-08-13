@@ -1,0 +1,61 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:dnd="sap.ui.core.dnd">
+	<Dialog id="idDJobtemp"  showHeader="false" contentWidth="1000px" contentHeight="550px">
+		<content id="idContent">
+			<Table id="idTabTemplate" mode="SingleSelectMaster" 
+				items="{path: '/results'}" >
+				<contextMenu>
+			<!-- <Menu>
+				<MenuItem text="Move to Available Products" press="moveToAvailableProductsTable" />
+				<MenuItem text="Move up" press="moveUp" />
+				<MenuItem text="Move down" press="moveDown" />
+			</Menu> -->
+		</contextMenu>
+				<headerToolbar>
+					<Toolbar>
+						<Text text="Maintain Steps"/>
+						<ToolbarSpacer/>
+						<Button text="Add" press="onaddTemp" type="Transparent"></Button>
+						<Button icon="sap-icon://arrow-top" press="moveUp" type="Transparent"></Button>
+						<Button icon="sap-icon://arrow-bottom" press="moveDown" type="Transparent"></Button>
+						
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+				<Column hAlign="Begin" vAlign="Middle" width="40px">
+						<Text text=""/>
+					</Column>
+					<Column hAlign="Begin" vAlign="Middle" width="425px">
+						<Text text="{i18n>stepname}"/>
+					</Column>
+					<Column hAlign="Begin" vAlign="Middle" width="425px" >
+						<Text text="Activity Name"/>
+					</Column>
+					<Column hAlign="End" vAlign="Middle" >
+						<Text text="{i18n>action}"/>
+					</Column>
+					
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{ACT_POSITION} ."></Text>
+							<Input value="{STEP_NAME}" />
+							<!-- <Text text="{TEMPLATE_ID}"></Text> -->
+							<Text text="{ACTIVITY_ID}"></Text>
+						<!-- <HBox > -->
+							<!-- <Button icon="sap-icon://add" press="onaddTemp" type="Transparent"></Button> -->
+							<Button icon="sap-icon://decline" tooltip="Remove Activity"  type="Transparent" press="onRemoveActivity"></Button>
+						<!-- </HBox> -->
+							
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<buttons>
+				
+				<Button text="Save Job Template" press="onsaveJobTemp" type="Accept"></Button>
+				<Button type='Reject' text="Close" press="onTempCancel"></Button>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

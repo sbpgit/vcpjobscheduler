@@ -1,0 +1,496 @@
+<mvc:View controllerName="vcpapp.vcpjobschedulersequence.controller.JobLogs" height="100%" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core" xmlns:forms="sap.ui.layout.form" xmlns:uxap="sap.uxap" xmlns="sap.m">
+	<Page id="idPage">
+		<customHeader>
+			<Toolbar>
+				<Button id="leftMenu" icon="sap-icon://nav-back" tooltip="Side Menu Expand/Collapse" press="onNavBack" type="Transparent" visible="true"/>
+				<ToolbarSpacer/>
+				<Title text="Job Logs" class="boldText"/>
+				<ToolbarSpacer/>
+				<Button tooltip="Refresh" icon="sap-icon://refresh" press="onRefresh" id="idLrefresh" type="Emphasized"/>
+			</Toolbar>
+		</customHeader>
+		<uxap:ObjectPageLayout id="ObjectPageLayoutJB" upperCaseAnchorBar="false">
+			<!-- <uxap:headerTitle>
+			<uxap:ObjectPageHeader objectTitle="Job Name" id="idjobName"/>
+		</uxap:headerTitle> -->
+			<uxap:sections>
+				<uxap:ObjectPageSection titleUppercase="false" title="Scheduling Options">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection>
+							<uxap:blocks>
+								<VBox class="sapUiSmallMargin">
+									<forms:Form id="FormDisplay354" editable="false">
+										<forms:layout>
+											<forms:ResponsiveGridLayout labelSpanXL="2" labelSpanL="2" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0"
+												emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="2" singleContainerFullSize="false"/>
+										</forms:layout>
+										<forms:formContainers>
+											<forms:FormContainer>
+												<forms:formElements>
+													<forms:FormElement label="Template">
+														<forms:fields>
+															<Text id="idTemp" text=""/>
+														</forms:fields>
+													</forms:FormElement>
+													<forms:FormElement label="Recurrence Pattern">
+														<forms:fields>
+															<Text id="idRec" text=""/>
+														</forms:fields>
+													</forms:FormElement>
+													<!-- <forms:FormElement label="Recurrence Value(UTC)" id="oneTime"> -->
+													<forms:FormElement label="Recurrence Value" id="oneTime">
+														<forms:fields>
+															<HBox>
+																<Text id="idRecVal" text=""/>
+															</HBox>
+														</forms:fields>
+													</forms:FormElement>
+													<forms:FormElement label="Recurrence Value" id="Recurr">
+														<forms:fields >
+															<HBox>
+																<VBox>
+																	<Text text="Year"/>
+																	<Input id="year" value="" width="80px"  editable="false"/>
+																</VBox>
+																<VBox>
+																	<Text text="Month"/>
+																	<Input id="mnth" value="" width="80px" placeholder="1-12" editable="false"/>
+																</VBox>
+																<VBox>
+																	<Text text="Date"/>
+																	<Input id="date" value="" width="80px" placeholder="1-31" editable="false"/>
+																</VBox>
+																<VBox>
+																	<Text text="Day"/>
+																	<Input id="day" value="" width="80px" placeholder="1-31" editable="false"/>
+																</VBox>
+																<VBox>
+																	<Text text="Hours"/>
+																	<Input id="hrs" value="" width="80px" placeholder="Hours" editable="false"/>
+																</VBox>
+																<VBox>
+																	<Text text="Minutes"/>
+																	<Input id="min" value="" width="80px" placeholder="minutes" editable="false"/>
+																</VBox>
+															</HBox>
+														</forms:fields>
+													</forms:FormElement>
+												</forms:formElements>
+											</forms:FormContainer>
+										</forms:formContainers>
+									</forms:Form>
+								</VBox>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection titleUppercase="false" title="Job Run Details" class="sapUiMediumMarginBottom">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection titleUppercase="false">
+							<uxap:blocks>
+								<forms:SimpleForm editable="false" layout="ColumnLayout" class="formClass">
+									<!-- <Label text="Start Time(UTC)"/> -->
+									<Label text="Valid From"/>
+									<Text id="isStart" text=""/>
+									<!-- <Label text="End Time(UTC)"/> -->
+									<Label text="Valid To"/>
+									<Text id="idEnd" text=""/>
+								</forms:SimpleForm>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection titleUppercase="false" title="Steps" class="sapUiMediumMarginBottom">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection >
+							<uxap:blocks>
+								<VBox class="formClass">
+									<Label text=""/>
+									<List id="idListPanel" items="{ostepModel>/}">
+										<items>
+											<CustomListItem>
+													<content>
+													<Panel id="idPanel" expandable="true" expanded="false" expand="onStepPress">
+														<headerToolbar>
+																	<OverflowToolbar style="Clear">
+																		<Title title="Step" text="{ostepModel>STEP_NO}" />
+																		<ToolbarSpacer />
+																		<Title title="Activity" text="{ostepModel>ACTIVITY_ID}"  />
+																		<ToolbarSpacer />
+																		<Title title="Status"  text="{ostepModel>ACTIVITY_STATUS}" />
+																		<ToolbarSpacer />
+																		<Button text="Log" press="onLogPress" class="sapUiMediumMarginEnd"/>
+																		
+																	</OverflowToolbar>
+																</headerToolbar>
+														<content>
+															<forms:Form id="idParameter" visible="true" class="sapUiLargeMarginTop">
+												<!-- <forms:title>
+												<core:Title id="idParam" text="Parameter Section" />
+											</forms:title> -->
+												<forms:layout>
+													<forms:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0"
+														emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="1" singleContainerFullSize="false"/>
+												</forms:layout>
+												<forms:formContainers>
+													<forms:FormContainer>
+														<forms:formElements>
+															<forms:FormElement id="LOCATION" visible="{newoGModel>/mloc}">
+																<forms:label>
+																	<Label text="Manufacturing Location"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="MlocInput" value="{newoGModel>/mlocvalue}" showValueHelp="false" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="DM_LOCATION" visible="{newoGModel>/dloc}">
+														<forms:label>
+															<Label text="{i18n>demloc}"  />
+														</forms:label>
+														<forms:fields>
+															<MultiInput id="DlocInput" value="{newoGModel>/dlocvalue}" placeholder="{i18n>loc}" showValueHelp="false"  />
+														</forms:fields>
+													</forms:FormElement>
+															<forms:FormElement id="PRODUCT" visible="{newoGModel>/prod}">
+																<forms:label>
+																	<Label text="Product"/>
+																</forms:label>
+																<forms:fields>
+																	<MultiInput id="CprodInput" value="{newoGModel>/prodvalue}" showValueHelp="false" />
+																</forms:fields>
+															</forms:FormElement>
+															<!-- <forms:FormElement id="PARTIAL_PRODUCT" visible="{newoGModel>/mloc}">
+														<forms:label>
+															<Label text="{i18n>parprod}"  />
+														</forms:label>
+														<forms:fields>
+															<MultiInput id="PprodInput" placeholder="{i18n>prod}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate" />
+														</forms:fields>
+													</forms:FormElement> -->
+															<forms:FormElement id="MODEL_VERSION" visible="{newoGModel>/modver}">
+																<forms:label>
+																	<Label text="{i18n>modelver}"/>
+																</forms:label>
+																<forms:fields>
+																	<Select id="idModelVer" selectedKey="{newoGModel>/modvervalue}" editable="false">
+																		<core:ListItem key="Active" text="Active"/>
+																		<core:ListItem key="Simulation" text="Simulation"/>
+																	</Select>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="PREDICTION_PROFILE" visible="{newoGModel>/preprofile}">
+																<forms:label>
+																	<Label text="{i18n>predpf}"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="PrePFInput" value="{newoGModel>/preprofilevalue}" placeholder="{i18n>predpf}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="VERSION" visible="{newoGModel>/version}">
+																<forms:label>
+																	<Label text="{i18n>ibpver}"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="idver" value="{newoGModel>/versionvalue}" placeholder="{i18n>ibpver}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="SCENARIO" visible="{newoGModel>/scenario}">
+																<forms:label>
+																	<Label text="{i18n>ibpscen}"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="idscen" value="{newoGModel>/scenariovalue}" placeholder="{i18n>ibpscen}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<!-- 25-08-2022 -->
+															<forms:FormElement id="GEN_TYPE" visible="{newoGModel>/gentype}">
+																<forms:label>
+																	<Label text="{i18n>type}"/>
+																</forms:label>
+																<forms:fields>
+																	<Select id="GenidType" selectedKey="{newoGModel>/gentypevalue}" class="buttonDesktop" editable="false">
+																		<core:ListItem key="OD" text="Object Dependency"/>
+																		<core:ListItem key="RT" text="Restrictions"/>
+																		<core:ListItem key="PI" text="Primary"/>
+																	</Select>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="OptAlgorithm" visible="{newoGModel>/optalgo}">
+																<forms:label>
+																	<Label text="Optimization Algorithm"/>
+																</forms:label>
+																<forms:fields>
+																	<Select id="PidOptAlg" selectedKey="{newoGModel>/optalgovalue}" showSecondaryValues="true" change="OnOptAlgChange">
+																		<core:ListItem key="None" text="None"/>
+																		<core:ListItem key="LINEAR" text="LINEAR" additionalText="Linear Optimization"/>
+																		<core:ListItem key="GD" text="GD" additionalText="Gradient Descent"/>
+																		<core:ListItem key="SLSQP" text="SLSQP" additionalText="Non Linear - Sequential Least Squares Quadratic Programming"/>
+																		<core:ListItem key="AUGLAG" text="AUGLAG" additionalText="Non Linear - Augmented Lagrangian"/>
+																		<core:ListItem key="AUGLAG_EQ" text="AUGLAG_EQ"
+																			additionalText="Non Linear - Augmented Lagrangian Variant uses Subsidary Algorithm for Penalizing Equality Constraint"/>
+																	</Select>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="OptFactor" visible="{newoGModel>/optfact}">
+																<forms:label>
+																	<Label text="Optimization Factor"/>
+																</forms:label>
+																<forms:fields>
+																	<Select id="PidOptFct" selectedKey="{newoGModel>/optfactvalue}" editable="false">
+																		<core:ListItem key="0.9" text="0.9"/>
+																		<core:ListItem key="0.8" text="0.8"/>
+																		<core:ListItem key="0.7" text="0.7"/>
+																	</Select>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="DsAlgorithm" visible="{newoGModel>/dsalgo}">
+																<forms:label>
+																	<Label text="Demand Sensing Algorithm"/>
+																</forms:label>
+																<forms:fields>
+																	<Select id="PidDSAlg" selectedKey="None" editable="false" change="OnDsAlgChange">
+																		<core:ListItem key="None" text="None"/>
+																	</Select>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="CUSTOMER_GROUP" visible="{newoGModel>/custgrp}">
+																<forms:label>
+																	<Label id="CG" text="{i18n>custgrp}" class="sapUiTinyMarginTop"/>
+																</forms:label>
+																<forms:fields>
+															<Input id="custGrpInput" value="{newoGModel>/custgrpvalue}" editable="false"  placeholder="{i18n>custgrp}"  />
+																	<!-- <Input id="classInput" placeholder="{i18n>class}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate"/> -->
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="OPERATOR" visible="{newoGModel>/operator}">
+														<forms:label>
+															<Label text="Date Operator" class="sapUiTinyMarginTop"/>
+														</forms:label>
+														<forms:fields>
+															<Select id="idOperator" editable="false" selectedKey="{newoGModel>/operatorvalue}">
+																<core:ListItem key="LT" text="LT"/>
+																<core:ListItem key="GT" text="GT"/>
+																<core:ListItem key="LE" text="LE"/>
+																<core:ListItem key="GE" text="GE"/>
+																<core:ListItem key="EQ" text="EQ"/>
+																<core:ListItem key="BT" text="BT"/>
+															</Select>
+														</forms:fields>
+													</forms:FormElement>
+															<forms:FormElement id="DATE_RANGE" visible="{newoGModel>/daterange}">
+																<forms:label>
+																	<Label text="{i18n>daterange}"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="FromDate"  value="{newoGModel>/fromvalue}" editable="false"/>
+																	<Input id="ToDate" value="{newoGModel>/tovalue}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="SINGLE_DATE" visible="{newoGModel>/sdate}">
+														<forms:label>
+															<Label id="singleDate" text="{i18n>daterange}" class="sapUiTinyMarginTop"/>
+														</forms:label>
+														<forms:fields>
+															<DatePicker id="singleDt" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" value="{newoGModel>/sdatevalue}" 
+																editable="false" class="sapUiSmallMarginBottom"/>
+															
+															</forms:fields>
+													</forms:FormElement>
+															<forms:FormElement id="Rolling_Timestamp" visible="{newoGModel>/rolltime}">
+															<forms:label>
+																<Label text="{i18n>Rolling}" />
+															</forms:label>
+															<forms:fields>
+															<HBox >
+																<CheckBox id="idRolling" editable="false" selected="{newoGModel>/rollingvalue}" />
+																<Input id="idRollingWeeks" value="{newoGModel>/rollingweeks}" editable="false" placeholder="Rolling Weeks" />
+															</HBox>
+															</forms:fields>
+														</forms:FormElement>
+															<forms:FormElement id="OVERRIDE_ASSIGNMENT" visible="{newoGModel>/overassm}">
+																<forms:label>
+																	<Label text="{i18n>override}"/>
+																</forms:label>
+																<forms:fields>
+																	<CheckBox id="idOverride" selected="{newoGModel>/overassmvalue}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="CRITICAL_ASSEMBLY" visible="{newoGModel>/criassmb}">
+																<forms:label>
+																	<Label text="{i18n>critical}"/>
+																</forms:label>
+																<forms:fields>
+																	<CheckBox id="idCritical" selected="{newoGModel>/criassmbvalue}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="IMPACT_ANALYSIS" visible="{newoGModel>/impact}">
+																<forms:label>
+																	<Label text="{i18n>impact}"/>
+																</forms:label>
+																<forms:fields>
+																	<CheckBox id="idImpact" selected="{newoGModel>/impactvalue}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="DAILY" visible="{newoGModel>/daily}">
+																<forms:label>
+																	<Label text="{i18n>daily}"/>
+																</forms:label>
+																<forms:fields>
+																	<CheckBox id="idDaily" selected="{newoGModel>/dailyvalue}"  editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+
+															<forms:FormElement id="SnapShot" visible="{newoGModel>/snap}">
+																<forms:label>
+																	<Label text="Save SnapShot" class="sapUiTinyMarginTop"/>
+																</forms:label>
+																<forms:fields>
+																	<CheckBox id="idSnapShot" selected="{newoGModel>/snap}" editable="false"/>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="SnapR" visible="{newoGModel>/snap}">
+																<forms:label>
+																	<Label text="" class="sapUiTinyMarginTop"/>
+																</forms:label>
+																<forms:fields>
+																	<RadioButtonGroup id="idSnapRadio" enabled="false" columns="2">
+																		<RadioButton id="create" text="Create"/>
+																		<RadioButton id="update" text="Update"/>
+																	</RadioButtonGroup>
+																</forms:fields>
+															</forms:FormElement>
+															<forms:FormElement id="snapDesc" visible="{newoGModel>/snap}">
+																<forms:label>
+																	<Label id="SD" text="SnapShot Description"  class="sapUiTinyMarginTop"/>
+																</forms:label>
+																<forms:fields>
+																	<Input id="idSnapDesc" value="{newoGModel>/snapdesvalue}" editable="false" placeholder="SnapShot Description" maxLength="60"/>
+																</forms:fields>
+															</forms:FormElement>
+														</forms:formElements>
+													</forms:FormContainer>
+												</forms:formContainers>
+											</forms:Form>
+                                        </content>
+																	</Panel>
+																<!-- </CustomListItem>
+															</items>
+														</List> -->
+													</content>
+												<!-- </Panel> -->
+											</CustomListItem>
+										</items>
+									</List>
+									<Table id="stepList" items="{path: '/Stepresults', sorter: [{path: 'STEP'}]}" itemPress="onStepPress" growingScrollToLoad="true"
+										mode="SingleSelectMaster" selectionChange="onStepPress" rememberSelections="false" visible="true">
+										
+										<columns>
+										<Column hAlign="Left" vAlign="Middle" visible="true" mergeDuplicates="true">
+												<Text text="Set"/>
+											</Column>
+											<Column hAlign="Left" vAlign="Middle" visible="true">
+												<Text text="Step Number"/>
+											</Column>
+											<Column hAlign="Left" vAlign="Middle" visible="true">
+												<Text text="Sequence Text"/>
+											</Column>
+											<Column hAlign="Left" vAlign="Middle" visible="true">
+												<Text text="Status"/>
+											</Column>
+											<Column hAlign="Left" vAlign="Middle">
+												<Text text="Log"/>
+											</Column>
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+												<Text text="{SET}"/>
+													<Text text="{STEP}"/>
+													<Text text="{ACTIVITY_ID}"/>
+													<Text text="{ACTIVITY_STATUS}"/>
+													<HBox >
+														<Button text="Log" press="onLogPress" class="sapUiMediumMarginEnd"/>
+														<Button text="Resume Job" press="onResumeJob" visible="{= ${ERROR_STATUS} === 'Error' ? true : false}" type="Reject"/>
+													</HBox>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+									<List id="idList" items="{oModel>/}">
+        <items>
+            <CustomListItem>
+                <!-- <Panel id="_IDGenPanel1" expandable="true" expanded="false" headerText="{oModel>set}"> -->
+                <!-- headerText="{oModel>mainStatus}"> -->
+                    <content>
+                        <!-- <List items="{path:'oModel>Subsets/',templateShareable:false}">
+                            <items>
+                                <CustomListItem> -->
+                                    <Panel id="_IDGenPanel2" expandable="true" expanded="false" >
+                                        <headerToolbar>
+                                                    <OverflowToolbar style="Clear">
+                                                        <Text text="{oModel>set}" />
+                                                        <ToolbarSpacer />
+                                                        <Text text="{oModel>subStatus}" class= "{=${oModel>subStatus} === 'Success' ? 'green' : ${oModel>subStatus} === 'Error' ? 'red' : 'black'} " />
+                                                        <ToolbarSpacer />
+                                                        
+                                                    </OverflowToolbar>
+                                                </headerToolbar>
+                                        <content>
+                                            <Table id="stepList1" items="{path: 'oModel>steps/'}" itemPress="onStepPress" growingScrollToLoad="true"
+                                        mode="SingleSelectMaster" selectionChange="onStepPress" rememberSelections="false"  >                                   
+                                        <columns>
+                                            <Column hAlign="Left" vAlign="Middle" visible="true">
+                                                <Text text="Step Number"/>
+                                            </Column>
+                                            <Column hAlign="Left" vAlign="Middle" visible="true">
+                                                <Text text="Sequence Text"/>
+                                            </Column>
+                                            <Column hAlign="Left" vAlign="Middle" visible="true">
+                                                <Text text="Status"/>
+                                            </Column>
+                                            <Column hAlign="Left" vAlign="Middle">
+                                                <Text text="Log"/>
+                                            </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text text="{oModel>STEP}"/>
+                                                    <Text text="{oModel>ACTIVITY_ID}"/>
+                                                    <Text text="{oModel>ACTIVITY_STATUS}"/>
+                                                    <HBox >
+                                                        <Button text="Log" press="onLogPress" class="sapUiMediumMarginEnd"/>
+                                                        <Button text="Resume Job" press="onResumeJob" visible="{= ${ERROR_STATUS} === 'Error' ? true : false}" type="Reject"/>
+                                                    </HBox>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                        </content>
+                                    </Panel>
+                                <!-- </CustomListItem>
+                            </items>
+                        </List> -->
+                    </content>
+                <!-- </Panel> -->
+            </CustomListItem>
+        </items>
+    </List>
+
+								</VBox>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection titleUppercase="false" title="Parameters" class="sapUiLargeMarginBottom">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection titleUppercase="false">
+							
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+			</uxap:sections>
+		</uxap:ObjectPageLayout>
+	</Page>
+</mvc:View>

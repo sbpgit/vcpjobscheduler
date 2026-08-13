@@ -1,0 +1,129 @@
+/* Enter your custom styles here */
+
+/* Enter your custom styles here */
+
+
+.sapUxAPObjectPageContainerNoBar>.sapUxAPObjectPageSection:first-child:not(.sapUxAPObjectPageSectionNoTitle) {
+    margin-top: 0.1rem !important;
+}
+
+.sapUiSizeCompact .sapUxAPObjectPageSectionHeader, .sapUxAPObjectPageSectionHeader {
+    height: 0.1rem !important;
+}
+.sapFDynamicPageTitleMain>.sapFDynamicPageTitleMainInner .sapFDynamicPageTitleMainHeading .sapFDynamicPageTitleMainHeadingInner .sapMTitle {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.lblClass{
+    width: 10rem !important;
+    text-align: center !important;
+    
+
+}
+div#__page0-title {
+    margin-left: 50VH;
+    font-size: larger;
+}
+
+.hBoxlab {
+    margin-left: 300px !important;
+}
+
+.TitleClass {
+    margin-left: 500px !important;
+}
+
+.formClass {
+    margin-top: 20px !important;
+}
+
+
+
+section#__splitter1-content-0 {
+    height: 270px !important;
+}
+
+/* section#__splitter3-content-0 {
+    width: 44% !important;
+} */
+
+/* section#__splitter1-content-1 {
+    width: 54%!important;
+} */
+
+section#__splitter1-content-1 {
+    height: 300px !important;
+}
+
+.sapUiLoSplitter.sapUiLoSplitterV>.sapUiLoSplitterBar, .sapUiLoSplitter.sapUiLoSplitterV>.sapUiLoSplitterOverlay .sapUiLoSplitterOverlayBar {
+    cursor: row-resize;
+    height: 0.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: none;
+    border-bottom: none;
+}
+
+.sapUiLoSplitter.sapUiLoSplitterH>.sapUiLoSplitterBar, .sapUiLoSplitter.sapUiLoSplitterH>.sapUiLoSplitterOverlay .sapUiLoSplitterOverlayBar {
+    cursor: col-resize;
+    width: 0.3rem;
+    height: 60%;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-left: none;
+    border-right: none;
+    vertical-align: top;
+}
+
+.red{
+    color : red !important;
+}
+
+.green{
+    color : green !important;
+}
+
+.orange{
+    color : orange !important;
+}
+
+.black{
+    color : black !important;
+}
+
+.colormargin{
+    color : rgb(210, 12, 12) !important;
+    margin-left: 150px !important;
+    text-decoration-line: underline !important;
+}
+
+.vboxline {
+    border-right: 1px solid #0f0f0f !important;
+}
+
+
+.addBorder{
+    border: 2px solid #8aef94 !important; ;
+}
+
+/* hide the open arrow button for panel  */
+/* button#container-vcpapp\.vcpjobschedulersequence---JobLogs--idPanel-container-vcpapp\.vcpjobschedulersequence---JobLogs--idListPanel-0-expandButton {
+    opacity: 0;
+}
+button#application-jobschedulersequence-display-component---JobLogs--idPanel-application-jobschedulersequence-display-component---JobLogs--idListPanel-0-expandButton {
+    opacity: 0;
+} */
+
+.opacity1 {
+    opacity: 0 !important;
+}
+
+.customPageH{
+    margin-left: 45vw !important;
+}
+
+

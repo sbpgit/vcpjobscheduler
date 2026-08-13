@@ -1,0 +1,146 @@
+[
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "vcpjobscheduler-catalog",
+      "title": "catalog.vcpjobscheduler.title",
+      "entityType": "catalog"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "vcpapp.vcpjobschedulersequence",
+          "vizId": "jobschedulersequence-display"
+        },
+        {
+          "appId": "vcpapp.vcpjobschedularlogs",
+          "vizId": "Job-Display"
+        },
+        {
+          "appId": "vcpapp.vcptemplate",
+          "vizId": "MaintainApplication-display"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "catalog.vcpjobscheduler.title": "VCP Sass Location Management"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "vcpjobscheduler-group",
+      "title": "Job Scheduler",
+      "entityType": "group"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "vcpapp.vcpjobschedulersequence",
+          "vizId": "jobschedulersequence-display"
+        },
+        {
+          "appId": "vcpapp.vcpjobschedularlogs",
+          "vizId": "Job-Display"
+        },
+        {
+          "appId": "vcpapp.vcptemplate",
+          "vizId": "MaintainApplication-display"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "group.vcpjobscheduler.title": "Job Scheduler"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "VCPJobRole",
+      "entityType": "role",
+      "title": "VCP Job Role",
+      "description": "VCP Job Role"
+    },
+    "payload": {
+      "apps": [
+        { "id": "vcpapp.vcpjobschedulersequence" },
+        {
+          "id": "vcpapp.vcpjobschedularlogs"
+        },
+        {
+          "id": "vcpapp.vcptemplate"
+        }
+      ],
+      "catalogs": [
+        { "id": "vcpjobscheduler-catalog" }
+      ],
+      "groups": [
+        { "id": "vcpjobscheduler-group" }
+      ],
+      "spaces":   [{ "id": "vcpjobscheduler-space" }]
+    }
+  },
+    {
+    "_version": "3.2.0",
+    "identification": {
+      "id": "vcpjobscheduler-page",
+      "title": "Job Scheduler",
+      "entityType": "page"
+    },
+    "payload": {
+      "layout": {
+        "sectionLayout": "tabbed"
+      },
+      "sections": [
+        {
+          "id": "vcpjobscheduler-section-1",
+          "title": "Job Scheduler",
+          "viz": [
+            {
+          "appId": "vcpapp.vcpjobschedulersequence",
+          "vizId": "jobschedulersequence-display"
+        },
+        {
+          "appId": "vcpapp.vcpjobschedularlogs",
+          "vizId": "Job-Display"
+        }
+          ]
+        },
+        {
+          "id": "vcpjobscheduler-section-2",
+          "title": "Maintenance",
+          "viz": [
+           {
+          "appId": "vcpapp.vcptemplate",
+          "vizId": "MaintainApplication-display"
+        }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "_version": "3.2.0",
+    "identification": {
+      "id": "vcpjobscheduler-space",
+      "title": "Job Scheduler",
+      "entityType": "space"
+    },
+    "payload": {
+      "contentNodes": [
+        { "id": "vcpjobscheduler-page",
+      "type": "page" }
+      ]
+    }
+  }
+]

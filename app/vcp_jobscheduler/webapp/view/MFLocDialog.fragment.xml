@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="MFLSlctListJSS" initialFocus="SearchField" title="{i18n>loc}" search="handleSearch" liveChange="handleSearch" rememberSelections="false"
+		confirm="handleSelection" cancel="handleClose" items="{/MFLocitems}">
+		<StandardListItem title="{FACTORY_LOC}" description="{LOCATION_DESC}" type="Active"/>
+	</SelectDialog>
+</core:FragmentDefinition>

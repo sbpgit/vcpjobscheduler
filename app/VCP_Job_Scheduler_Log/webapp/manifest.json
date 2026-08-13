@@ -1,0 +1,183 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "vcpapp.vcpjobschedularlogs",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+     "version": "2512.01.01"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.14.3",
+      "toolsId": "c0574aeb-92d8-4c59-8aea-5abf20bc707e"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/v2/catalog/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "Jobs": {
+        "uri": "/v2/jobs/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "Job-Display": {
+          "semanticObject": "Job",
+          "icon": "sap-icon://activity-items",
+          "action": "Display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://activity-items",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.120.41",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "vcpapp.vcpjobschedularlogs.i18n.i18n"
+        }
+      },
+      "BModel": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "JModel": {
+        "dataSource": "Jobs",
+        "preload": true
+      },
+      "oGModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "settings": {
+            "defaultBindingMode": "TwoWay"
+        },
+        "preload": true
+    }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "vcpapp.vcpjobschedularlogs.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Home",
+          "pattern": "",
+          "target": [
+            "Home"
+          ]
+        }
+      ],
+      "targets": {
+        "Home": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Home",
+          "viewName": "Home",
+          "viewLevel": 1
+        },
+        "ItemMaster": {
+					"viewType": "XML",
+					"viewName": "ItemMaster",
+          "viewId": "ItemMaster",
+					"viewLevel": 2
+				},
+				"ItemDetail": {
+					"viewType": "XML",
+					"viewName": "ItemDetail",
+          "viewId": "ItemDetail",
+					"viewLevel": 3
+				}
+      }
+    },
+    "rootView": {
+      "viewName": "vcpapp.vcpjobschedularlogs.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "vcpjobscheduler"
+  },
+  "sap.platform.cf": {
+    "oAuthScopes": [
+        "$XSAPPNAME.User",
+        "$XSAPPNAME.admin"
+      ],
+      "ui5VersionNumber": "1.120.41"
+}
+}

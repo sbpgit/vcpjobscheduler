@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<!-- <SelectDialog id="MFLSlctListJSS" initialFocus="SearchField" title="{i18n>loc}" search="handleSearch" liveChange="handleSearch" rememberSelections="false"
+		confirm="handleSelection" cancel="handleClose" items="{/MFLocitems}">
+		<StandardListItem title="{FACTORY_LOC}" description="{LOCATION_DESC}" type="Active"/>
+	</SelectDialog> -->
+
+
+	<TableSelectDialog id="MFLSlctListJSSMul" initialFocus="SearchField" search="handleSearch" liveChange="handleSearch" rememberSelections="false"
+		confirm="handleSelection" cancel="handleClose"  title="Select Manufacturing Location"
+		items="{/MFLocitemsUni}" multiSelect="true" contentWidth="300px" contentHeight="auto" titleAlignment="Center">
+			<columns>
+			<Column width="auto" hAlign="Left">
+				<header>
+					<Text text="Manufacturing Location" />
+				</header>
+			</Column>
+			</columns>
+			<ColumnListItem vAlign="Middle">
+			<ObjectIdentifier title="{FACTORY_LOC}" text="{LOCATION_DESC}" ></ObjectIdentifier>
+			</ColumnListItem>
+		</TableSelectDialog>
+</core:FragmentDefinition>

@@ -1,0 +1,524 @@
+<mvc:View controllerName="vcpapp.vcptemplate.controller.Template"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns:l="sap.ui.layout"
+    xmlns:dnd="sap.ui.core.dnd"
+    xmlns:f="sap.ui.layout.form">
+    <Page id="idPage" title="New Job Template" titleAlignment="Center" showNavButton="true" navButtonPress="onBack" showFooter="true" class="boldText">
+
+             <f:Form id="idForm" >
+                <f:title>
+                    <core:Title text="General Information" />
+                </f:title>
+                <f:layout>
+                    <f:ResponsiveGridLayout
+                        labelSpanXL="4"
+                        labelSpanL="4"
+                        labelSpanM="12"
+                        labelSpanS="12"
+                        adjustLabelSpan="false"
+                        emptySpanXL="0"
+                        emptySpanL="0"
+                        emptySpanM="0"
+                        emptySpanS="0"
+                        columnsXL="2"
+                        columnsL="2"
+                        columnsM="1"
+                        singleContainerFullSize="false"
+                    />
+                </f:layout>
+                <!-- <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="Job Template">
+                                <f:fields>
+                                    <Input id="idTemp" value="" width="300px"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers> -->
+            </f:Form>
+<VBox class="sapUiSmallMargin">
+<HBox >
+ <f:Form id="idForms" width="1000px">
+                
+                <f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="4"
+					labelSpanL="4"
+					labelSpanM="12"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="0"
+					emptySpanL="0"
+					emptySpanM="0"
+					emptySpanS="0"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer >
+					<f:formElements>						
+						<f:FormElement>
+							<f:fields>
+                            <HBox class="left">
+                            <Label text="Job Template : " required="true" class="sapUiTinyMarginTop wid"/>
+                            <Input id="idTemp" value="" width="300px" class="sapUiTinyMarginBegin"/>
+                            </HBox>
+								
+							</f:fields>
+						</f:FormElement>
+                        <f:FormElement>
+							<f:fields>
+                            <HBox >
+                            <Label text="Job Template Desc : " class="sapUiTinyMarginTop wid"/>
+                            <Input id="idTempDesc" value="" width="500px" class="sapUiTinyMarginBegin"/>
+                            </HBox>
+								
+							</f:fields>
+						</f:FormElement>
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+            <Label text="Steps" required="true" class="sapUiTinyMarginBeginEnd sapUiTinyMarginTop"/>
+
+            <!-- <Table id="idStepList" mode="SingleSelectMaster" rememberSelections="false" selectionChange="onStepName"
+				items="{path: '/results'}"> -->
+                <Table id="idStepList" mode="SingleSelectMaster" rememberSelections="false" selectionChange="onHilightParams"
+				items="{path: '/results'}">
+				<columns>
+                <Column hAlign="Begin" vAlign="Middle" width="40px">
+						<Text text=""/>
+					</Column>
+					<Column hAlign="Begin" vAlign="Middle" >
+						<Text text=""/>
+					</Column>
+					<Column hAlign="Begin" vAlign="Middle" visible="false">
+						<Text text="{i18n>activityid}"/>
+					</Column>
+                    <Column hAlign="Begin" vAlign="Middle" visible="false">
+						<Text text="Level"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{ACT_POSITION}"></Text>
+							<Text text="{STEP_NAME}"></Text>
+							<Text text="{ACTIVITY_ID}"></Text>
+							<Text text="{LEVEL}"></Text>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+            </HBox>
+
+            <f:Form id="idform2" visible="false">
+			<f:title>
+				<core:Title text="Scheduling Options" />
+			</f:title>
+			<f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="4"
+					labelSpanL="4"
+					labelSpanM="12"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="0"
+					emptySpanL="0"
+					emptySpanM="0"
+					emptySpanS="0"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer >
+					<f:formElements>
+						<f:FormElement label="Recurrence Pattern">
+							<f:fields>
+								<Select id="idPatern" change="onPattern" selectedKey="SR" class="buttonDesktop">
+                                    <core:ListItem key="DA" text="{i18n>daily}"/>
+                                    <core:ListItem key="HO" text="{i18n>hourly}"/>
+                                    <core:ListItem key="MI" text="{i18n>minutes}"/>
+                                    <core:ListItem key="MO" text="{i18n>monthly}"/>
+                                    <core:ListItem key="SR" text="{i18n>singlerun}"/>
+                                    <core:ListItem key="WE" text="{i18n>weekly}"/>
+						        </Select>
+							</f:fields>
+						</f:FormElement>
+						<f:FormElement id="idLableEve" label="Every." visible="false">
+							<f:fields>
+								<HBox >
+                                <Input id="idEvery" value="0" />
+                                <Label id="idEveText" text="Hour(s)"/>
+                                </HBox>
+							</f:fields>
+						</f:FormElement>
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+
+
+
+        <f:Form id="idarrow" visible="false">
+                <f:title>
+                    <core:Title id="idarrowTitle" text="" />
+                </f:title>
+                <f:layout>
+                    <f:ResponsiveGridLayout
+                        labelSpanXL="4"
+                        labelSpanL="4"
+                        labelSpanM="12"
+                        labelSpanS="12"
+                        adjustLabelSpan="false"
+                        emptySpanXL="0"
+                        emptySpanL="0"
+                        emptySpanM="0"
+                        emptySpanS="0"
+                        columnsXL="2"
+                        columnsL="2"
+                        columnsM="1"
+                        singleContainerFullSize="false"
+                    />
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement>
+                                <f:fields>
+                                    <HBox class="hBoxlab">
+                        <Button text='' icon="sap-icon://navigation-left-arrow" tooltip="Previous Step" press="Previous"></Button>
+                        <Label id="stepLabel" required="false" text="" class="sapUiTinyMarginTop lblClass"/>
+                        <Button text='' icon="sap-icon://navigation-right-arrow" tooltip="Next Step" press="Next"></Button>
+                        </HBox>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+
+
+
+        <f:Form id="idParameter" visible="false" >
+			<f:title>
+				<core:Title id="idParam" text="Default Parameter Section" />
+			</f:title>
+			<f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="4"
+					labelSpanL="4"
+					labelSpanM="12"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="0"
+					emptySpanL="0"
+					emptySpanM="0"
+					emptySpanS="0"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+                            <f:FormContainer>
+                                <f:formElements>
+                                    <f:FormElement id="MF_LOCATION" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>manuloc}"  class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <MultiInput id="MFLInput" placeholder="{i18n>manuloc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate"/>
+                                        </f:fields>
+                                    </f:FormElement>
+									<f:FormElement id="DM_LOCATION" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>demloc}"  class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <!-- <Input id="DlocInput" placeholder="{i18n>loc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" /> -->
+                                            <MultiInput id="DlocInput" placeholder="{i18n>loc}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate" />
+                                        </f:fields>
+                                    </f:FormElement>
+									<f:FormElement id="CONFIG_PRODUCT" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>confprod}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <MultiInput id="CprodInput" placeholder="{i18n>prod}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="PARTIAL_PRODUCT" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>parprod}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <MultiInput id="PprodInput" placeholder="{i18n>prod}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="MODEL_VERSION" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>modelver}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Select id="idModelVer" selectedKey="Active" change="onModelChange">
+                                                <core:ListItem key="Active" text="Active" />
+                                                <core:ListItem key="Simulation" text="Simulation" />
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+									<f:FormElement id="PREDICTION_PROFILE" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>predpf}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Input id="PrePFInput" placeholder="{i18n>predpf}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="FORECAST_ALGORITHM" visible="true">
+										<f:label>
+											<Label id="FL" text="Forecast Algorithm" class="sapUiTinyMarginTop"/>
+										</f:label>
+										<f:fields>
+											<Input id="ForeAlgInput" required="true" placeholder="Forecast Algorithm" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp"/>
+										</f:fields>
+									</f:FormElement>
+                                    <f:FormElement id="VERSION" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>ibpver}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Input id="idver" value="" placeholder="{i18n>ibpver}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="SCENARIO" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>ibpscen}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Input id="idscen" value="" placeholder="{i18n>ibpscen}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                        </f:fields>
+                                    </f:FormElement>
+                                            <f:FormElement id="CLASS" visible="false">
+                                                <f:label> 
+                                                    <Label text="{i18n>class}" />
+                                                </f:label>
+                                                <f:fields>
+                                            <MultiInput id="classInput" placeholder="{i18n>class}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                                    <!-- <Input id="classInput" placeholder="{i18n>class}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate"/> -->
+                                                </f:fields>
+                                            </f:FormElement>
+                                 <f:FormElement id="CUSTOMER_GROUP" visible="false">
+                                                <f:label>
+                                                    <Label text="{i18n>custgrp}" />
+                                                </f:label>
+                                                <f:fields>
+                                            <Input id="custGrpInput" placeholder="{i18n>custgrp}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                                    <!-- <Input id="classInput" placeholder="{i18n>class}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" tokenUpdate="handleTokenUpdate"/> -->
+                                                </f:fields>
+                                            </f:FormElement>
+                                    <f:FormElement id="GEN_TYPE" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>type}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Select id="GenidType" selectedKey="RT" class="buttonDesktop" change="OnGentypeChange"  items="{/Types}">
+												<core:Item text="{name}" key="{key}" />
+                                                <!-- <core:ListItem key="OD" text="Object Dependency" />
+                                                <core:ListItem key="RT" text="Restrictions" />
+                                                <core:ListItem key="PI" text="Primary" /> -->
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+
+
+                                    <f:FormElement id="OptAlgorithm" visible="false">
+                                        <f:label>
+                                            <Label text="Optimization Algorithm" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Select id="PidOptAlg" selectedKey="None" showSecondaryValues="true"  change="OnOptAlgChange">
+                                                <core:ListItem key="None" text="None"/>
+                                                <core:ListItem key="LINEAR" text="LINEAR" additionalText="Linear Optimization" />
+                                                <core:ListItem key="GD" text="GD" additionalText="Gradient Descent"/>
+                                                <core:ListItem key="LINEAR_GD" text="LINEAR_GD" additionalText="Linear or Gradient Descent"/>
+                                                <core:ListItem key="SLSQP" text="SLSQP" additionalText="Non Linear - Sequential Least Squares Quadratic Programming" />
+                                                <core:ListItem key="AUGLAG" text="AUGLAG" additionalText="Non Linear - Augmented Lagrangian" />
+                                                <core:ListItem key="AUGLAG_EQ" text="AUGLAG_EQ" additionalText="Non Linear - Augmented Lagrangian Variant uses Subsidary Algorithm for Penalizing Equality Constraint"/>
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+                                     <f:FormElement id="OptFactor" visible="false">
+                                        <f:label>
+                                            <Label text="Optimization Factor" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Select id="PidOptFct" selectedKey="0.9" change="OnOptFctChange">
+                                                <core:ListItem key="0.9" text="0.9" />
+                                                <core:ListItem key="0.8" text="0.8" />
+                                                <core:ListItem key="0.7" text="0.7" />   
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="DsAlgorithm" visible="false">
+                                        <f:label>
+                                            <Label text="Demand Sensing Algorithm" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <Select id="PidDSAlg" selectedKey="None" editable="false" change="OnDsAlgChange">  
+                                             <core:ListItem key="None" text="None" /> 
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement id="OPERATOR" visible="false">
+										<f:label>
+											<Label text="Date Operator" class="sapUiTinyMarginTop"/>
+										</f:label>
+										<f:fields>
+											<Select id="idOperator" selectedKey="BT" change="onOperatorChange">
+												<core:ListItem key="LT" text="LT"/>
+												<core:ListItem key="GT" text="GT"/>
+												<core:ListItem key="LE" text="LE"/>
+												<core:ListItem key="GE" text="GE"/>
+												<core:ListItem key="EQ" text="EQ"/>
+												<core:ListItem key="BT" text="BT"/>
+											</Select>
+										</f:fields>
+									</f:FormElement>
+
+
+                                    <f:FormElement id="DATE_RANGE" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>daterange}" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+
+                                        	<DatePicker id="FromDate" displayFormat="yyyy-MM-dd"  valueFormat="yyyy-MM-dd" value="" placeholder="{i18n>fromdate} yyyy/MM/DD"  change="handleDateChange" class="sapUiSmallMarginBottom"/>
+                                        	<DatePicker id="ToDate" displayFormat="yyyy-MM-dd"  valueFormat="yyyy-MM-dd" value="" placeholder="{i18n>todate} yyyy/MM/DD" change="handleDateChange" class="sapUiSmallMarginBottom"/>
+                                            <!-- <CheckBox id="idRolling" select="onRolling" /> -->
+                                            <!-- <Input id="FromDate" placeholder="{i18n>fromdate} yyyy/MM/DD" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" />
+                                            <Input id="ToDate" placeholder="{i18n>todate} yyyy/MM/DD" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="handleValueHelp" /> -->
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="SINGLE_DATE" visible="false">
+										<f:label>
+											<Label id="singleDate" text="{i18n>daterange}" class="sapUiTinyMarginTop"/>
+										</f:label>
+										<f:fields>
+											<DatePicker id="singleDt" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" value="" placeholder="{i18n>fromdate} yyyy/MM/DD"
+												change="handleDateChange1" class="sapUiSmallMarginBottom"/>
+											
+											</f:fields>
+									</f:FormElement>
+                                    <f:FormElement id="Rolling_Timestamp" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>Rolling}"  class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                        <HBox >
+                                        <CheckBox id="idRolling" select="onRolling" />
+                                        <Input id="idRollingWeeks" value="" placeholder="Rolling Weeks" liveChange="onRollWeekchange" visible="false"/>
+                                        </HBox>
+                                        </f:fields>
+                                    </f:FormElement>
+                                    <f:FormElement id="OVERRIDE_ASSIGNMENT" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>override}" class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <CheckBox id="idOverride" select="onOverride" />
+                                        </f:fields>
+                                    </f:FormElement>
+									<f:FormElement id="CRITICAL_ASSEMBLY" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>critical}" class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <CheckBox id="idCritical" select="onCritical" />
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement id="IMPACT_ANALYSIS" visible="false">
+                                        <f:label>
+                                            <Label text="{i18n>impact}" class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <CheckBox id="idImpact" select="onImpact" />
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement id="DAILY" visible="true">
+                                        <f:label>
+                                            <Label text="{i18n>daily}" class="sapUiTinyMarginTop"/>
+                                        </f:label>
+                                        <f:fields>
+                                            <CheckBox id="idDaily" select="onDaily" />                                            
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <f:FormElement id="SnapShot" visible="false">
+                                        <f:label>
+                                            <Label text="Save Snapshot" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <CheckBox id="idSnapshot" select="onSnapshot" />                                            
+                                        </f:fields>
+                                    </f:FormElement>
+
+									<f:FormElement id="SnapR" visible="false">
+                                        <f:label>
+                                            <Label text="" class="sapUiTinyMarginTop" />
+                                        </f:label>
+                                        <f:fields>
+                                            <RadioButtonGroup id="idSnapRadio" select="OnsnapSelect" columns="2" >
+												<RadioButton id="create" text="Create" />
+												<RadioButton id="update" text="Update" />
+											</RadioButtonGroup>                                           
+                                        </f:fields>
+                                    </f:FormElement>
+
+									<f:FormElement id="snapDesc" visible="false">
+										<f:label>
+											<Label id="SD" text="SnapShot Description" required="true" class="sapUiTinyMarginTop" />
+										</f:label>
+										<f:fields>
+											<Input id="idSnapDesc" value="" placeholder="SnapShot Description" maxLength="60" liveChange="onDescChange"/>
+										</f:fields>
+									</f:FormElement>
+                                    <f:FormElement id="HISTORY_WEEKS" visible="true">
+										<f:label>
+											<Label id="Week" text="{i18n>weeks}" required="false" class="sapUiTinyMarginTop"/>
+										</f:label>
+										<f:fields>
+											<Input id="idWeeks" value="" placeholder="{i18n>weeks}" liveChange="onWeekValues" />
+										</f:fields>
+									</f:FormElement>
+                                    
+                                </f:formElements>
+                            </f:FormContainer>
+                        </f:formContainers>
+		</f:Form>
+
+        </VBox>
+        
+
+        <footer>
+            <Toolbar id="idFooter">
+                <ToolbarSpacer/>
+                <Button id="idMSteps" type="Transparent" text="{i18n>maintainsteps}" press="onMaintain"></Button>
+                <Button type="Transparent" text="{i18n>save}" press="onSave"></Button>
+                <Button  type="Transparent" text="{i18n>cancel}" press="onBack"></Button>
+            </Toolbar>
+        </footer>
+
+    </Page>
+</mvc:View>

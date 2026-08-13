@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="actLogs" contentWidth="750px" title=""  >
+		<content id="idContent">
+			<Table id="idScheRunLogData" items="{path: '/results'}">
+                            <columns>
+                                <Column hAlign="Left" vAlign="Middle" width="600px">
+                                    <Text text="Message" />
+                                </Column>
+                                <Column hAlign="Left" vAlign="Right">
+                                    <Text text="State/ Code" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <!-- <ObjectIdentifier title="{text}" text="{path:'time', formatter: '.formatter.gettimezone1'}" /> -->
+                                        <ObjectIdentifier title="{text}" text="{time}" /> 
+                                        <ObjectIdentifier title="{type}" text="{code}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+		</content>
+		<buttons>
+				<Button type='Reject' text="Close" press="onSchedLogsClose"></Button>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
